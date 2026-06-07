@@ -1,4 +1,10 @@
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
+import { ChevronsRight, MousePointer2Off, AlertCircle, RefreshCw } from 'lucide-react';
+import { servicePageStyles, serviceCardStyles } from '../../assets/dummyStyles';
+
 const PlaceholderImg = "/placeholder-service.jpg";
+const API_BASE = import.meta.env.VITE_API_BASE || 'http://localhost:4000';
 
 const ServiceCard = ({ service }) => {
   const hasSrcSet =
@@ -15,7 +21,6 @@ const ServiceCard = ({ service }) => {
       : null);
 
   const name = service.name || "Service";
-  const shortDescription = service.shortDescription || service.about || "";
 
   return (
     <div className={serviceCardStyles.card}>
@@ -100,66 +105,134 @@ const ServiceCard = ({ service }) => {
   );
 };
 
-  const API_BASE = "http://localhost:4000";
+const ServicePage = ({ previewCount }) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [retryCount, setRetryCount] = useState(0);
 
-  async function loadServices() {
+  const loadServices = useCallback(async () => {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch(`${API_BASE}/api/services`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const res = await fetch(`${API_BASE}/api/services`, { signal: controller.signal });
+      clearTimeout(timeout);
       const json = await res.json().catch(() => null);
 
       if (!res.ok) {
-        const msg =
-          (json && json.message) || `Failed to load services (${res.status})`;
-        setError(msg);
+        setError((json && json.message) || `Server error (${res.status})`);
         setServices([]);
-        setLoading(false);
-        return;
+      } else {
+        const items = (json && (json.data || json)) || [];
+        const normalized = (Array.isArray(items) ? items : []).map((s) => {
+          const id = s._id || s.id;
+          const image = s.imageUrl || s.image || s.imageSmall || "";
+          const available =
+            typeof s.available === "boolean"
+              ? s.available
+              : typeof s.availability === "string"
+                ? s.availability.toLowerCase() === "available"
+                : s.availability === "Available" || s.available === true;
+
+          return {
+            id,
+            name: s.name || "Service",
+            shortDescription: s.shortDescription || s.about || "",
+            image,
+            imageSmall: s.imageSmall || null,
+            imageMedium: s.imageMedium || null,
+            imageLarge: s.imageLarge || null,
+            imageSrcSet: s.imageSrcSet || null,
+            imageWebp: s.imageWebp || null,
+            price: s.price ?? s.fee ?? 0,
+            available,
+            raw: s,
+          };
+        });
+        setServices(normalized);
+        setError("");
       }
-
-      const items = (json && (json.data || json)) || [];
-      const normalized = (Array.isArray(items) ? items : []).map((s) => {
-        const id = s._id || s.id;
-        const image = s.imageUrl || s.image || s.imageSmall || "";
-        const available =
-          typeof s.available === "boolean"
-            ? s.available
-            : typeof s.availability === "string"
-              ? s.availability.toLowerCase() === "available"
-              : s.availability === "Available" || s.available === true;
-
-        return {
-          id,
-          name: s.name || "Service",
-          shortDescription: s.shortDescription || s.about || "",
-          image,
-          imageSmall: s.imageSmall || null,
-          imageMedium: s.imageMedium || null,
-          imageLarge: s.imageLarge || null,
-          imageSrcSet: s.imageSrcSet || null,
-          imageWebp: s.imageWebp || null,
-          price: s.price ?? s.fee ?? 0,
-          available,
-          raw: s,
-        };
-      });
-
-      setServices(normalized);
     } catch (err) {
-      console.error("load services error:", err);
-      setError("Network error while loading services.");
+      if (err.name === 'AbortError') {
+        setError("Request timed out. Server may be starting up.");
+      } else {
+        setError("Could not connect to server.");
+      }
       setServices([]);
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     loadServices();
-  }, [API_BASE]);
+  }, [loadServices, retryCount]);
 
-  const shown = services.slice(0, previewCount);
+  const shown = previewCount ? services.slice(0, previewCount) : services;
+
+  return (
+    <div className={servicePageStyles.pageContainer}>
+      <div className={servicePageStyles.maxWidthContainer}>
+        {/* Header */}
+        <div className={servicePageStyles.header}>
+          <h1 className={servicePageStyles.title}>Medical Checkups & Labs</h1>
+          <p className={servicePageStyles.subtitle}>
+            Explore our specialized diagnostic services and preventative care checkup packages.
+          </p>
+        </div>
+
+        {/* Loading / Error / Results */}
+        {loading ? (
+          <div className={servicePageStyles.skeletonGrid}>
+            {Array.from({ length: previewCount || 8 }).map((_, idx) => (
+              <div key={idx} className={servicePageStyles.skeletonCard}>
+                <div className={servicePageStyles.skeletonImage} />
+                <div className={servicePageStyles.skeletonText1} />
+                <div className={servicePageStyles.skeletonText2} />
+                <div className={servicePageStyles.skeletonButton} />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div style={{
+            display: 'flex', alignItems: 'center', gap: '10px',
+            background: '#fff8e1', border: '1px solid #ffe082', borderRadius: '10px',
+            padding: '14px 18px', margin: '16px 0', fontSize: '13px', color: '#7b6000'
+          }}>
+            <AlertCircle size={16} style={{ flexShrink: 0 }} />
+            <span>Services are temporarily unavailable — the server may be starting up.</span>
+            <button
+              onClick={() => setRetryCount(c => c + 1)}
+              style={{
+                marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: '4px',
+                background: '#fff3cd', border: '1px solid #ffc107', borderRadius: '6px',
+                padding: '5px 12px', cursor: 'pointer', fontWeight: 600, fontSize: '12px', whiteSpace: 'nowrap'
+              }}
+            >
+              <RefreshCw size={12} /> Retry
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className={servicePageStyles.servicesGrid}>
+              {shown.map((service) => (
+                <ServiceCard key={service.id} service={service} />
+              ))}
+            </div>
+
+            {shown.length === 0 && (
+              <div className={servicePageStyles.emptyState}>
+                No medical services are currently available.
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ServicePage;
+export { ServiceCard };

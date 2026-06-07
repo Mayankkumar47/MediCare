@@ -1,3 +1,10 @@
+import React, { useState, useRef, useEffect } from "react";
+import { Calendar, Plus, Trash2, CheckCircle, XCircle, Eye, EyeOff } from "lucide-react";
+import { doctorDetailStyles as s } from "../../assets/dummyStyles";
+
+import API_BASE_ROOT from '../../api.js';
+const API_BASE = API_BASE_ROOT + '/api';
+
 function timeStringToMinutes(t) {
   if (!t) return 0;
   const [hhmm, ampm] = t.split(" ");
@@ -30,7 +37,7 @@ function formatDateISO(iso) {
   return `${day} ${month} ${y}`;
 }
 
-
+export default function AddPage() {
   const [doctorList, setDoctorList] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -219,8 +226,6 @@ function formatDateISO(iso) {
 
       if (form.imageFile) fd.append("image", form.imageFile);
 
-      const API_BASE = "http://localhost:4000/api";
-
       const res = await fetch(`${API_BASE}/doctors`, {
         method: "POST",
         body: fd,
@@ -237,19 +242,12 @@ function formatDateISO(iso) {
 
       showToast("success", "Doctor Added Successfully!");
 
-      if (data?.token) {
-        try {
-          localStorage.setItem("token", data.token);
-        } catch (err) {}
-      }
-
       const doctorFromServer = data?.data
         ? data.data
         : { id: Date.now(), ...form, imageUrl: form.imagePreview };
 
       setDoctorList((old) => [doctorFromServer, ...old]);
 
-      // cleanup: revoke object URL if used
       if (form.imagePreview && form.imageFile) {
         try {
           URL.revokeObjectURL(form.imagePreview);
@@ -293,139 +291,313 @@ function formatDateISO(iso) {
     }
   }
 
-          <input
-            className={s.inputBase}
-            placeholder="Rating (1.0 - 5.0)"
-            type="number"
-            min={1}
-            max={5}
-            step={0.1}
-            value={form.rating}
-            onChange={(e) => {
-              const v = e.target.value;
+  return (
+    <div className={s.pageContainer}>
+      <div className={s.maxWidthContainer}>
+        <div className={s.headerContainer}>
+          <h2 className={s.headerTitle}>Add New Doctor</h2>
+          <p className="text-gray-500 mt-1">Register a medical professional and configure their availability schedule.</p>
+        </div>
 
-              // allow clearing
-              if (v === "") {
-                setForm((p) => ({ ...p, rating: "" }));
-                return;
-              }
-
-              const n = Number(v);
-              if (Number.isNaN(n)) return;
-
-              // clamp between 1 and 5
-              const clamped = Math.max(1, Math.min(5, n));
-
-              // keep only 1 decimal place
-              const fixed = Math.round(clamped * 10) / 10;
-
-              setForm((p) => ({ ...p, rating: fixed.toString() }));
-            }}
-            onBlur={() => {
-              // force 1 decimal place on blur
-              setForm((p) => {
-                if (!p.rating) return p;
-                const n = Number(p.rating);
-                if (Number.isNaN(n)) return { ...p, rating: "" };
-
-                const clamped = Math.max(1, Math.min(5, n));
-                return { ...p, rating: clamped.toFixed(1) };
-              });
-            }}
-          />
-
-
-          {/* SCHEDULE */}
-          <div className={s.scheduleContainer + " md:col-span-2"}>
-            <div className={s.scheduleHeader}>
-              <Calendar className="text-emerald-600" />
-              <p className={s.scheduleTitle}>Add Schedule Slots</p>
+        <form onSubmit={handleAdd} className={s.formContainer}>
+          <div className={s.formGrid}>
+            <div>
+              <label className={s.label}>Full Name</label>
+              <input
+                type="text"
+                placeholder="Dr. John Doe"
+                className={s.inputBase}
+                value={form.name}
+                onChange={(e) => setForm((p) => ({ ...p, name: e.target.value }))}
+              />
             </div>
 
-            <div className={s.scheduleInputsContainer}>
+            <div>
+              <label className={s.label}>Specialization</label>
               <input
-                type="date"
-                value={slotDate}
-                min={today}
-                onChange={(e) => setSlotDate(e.target.value)}
-                className={s.scheduleDateInput}
+                type="text"
+                placeholder="Cardiologist"
+                className={s.inputBase}
+                value={form.specialization}
+                onChange={(e) => setForm((p) => ({ ...p, specialization: e.target.value }))}
               />
+            </div>
 
-              <select
-                value={slotHour}
-                onChange={(e) => setSlotHour(e.target.value)}
-                className={s.scheduleTimeSelect}
-              >
-                <option value="">Hour</option>
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <option key={i} value={String(i + 1)}>
-                    {i + 1}
-                  </option>
+            <div>
+              <label className={s.label}>Email Address</label>
+              <input
+                type="email"
+                placeholder="johndoe@medicare.com"
+                className={s.inputBase}
+                value={form.email}
+                onChange={(e) => setForm((p) => ({ ...p, email: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Password</label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter login password"
+                  className={s.inputBase}
+                  value={form.password}
+                  onChange={(e) => setForm((p) => ({ ...p, password: e.target.value }))}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className={s.passwordToggleButton}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label className={s.label}>Experience</label>
+              <input
+                type="text"
+                placeholder="8 years"
+                className={s.inputBase}
+                value={form.experience}
+                onChange={(e) => setForm((p) => ({ ...p, experience: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Qualifications</label>
+              <input
+                type="text"
+                placeholder="MBBS, MD"
+                className={s.inputBase}
+                value={form.qualifications}
+                onChange={(e) => setForm((p) => ({ ...p, qualifications: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Location / Clinic Room</label>
+              <input
+                type="text"
+                placeholder="Delhi, Clinic Room 3B"
+                className={s.inputBase}
+                value={form.location}
+                onChange={(e) => setForm((p) => ({ ...p, location: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Consultation Fee (INR)</label>
+              <input
+                type="number"
+                placeholder="500"
+                className={s.inputBase}
+                value={form.fee}
+                onChange={(e) => setForm((p) => ({ ...p, fee: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Patient Count Success / Stats</label>
+              <input
+                type="text"
+                placeholder="500+"
+                className={s.inputBase}
+                value={form.patients}
+                onChange={(e) => setForm((p) => ({ ...p, patients: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Success Rate (%)</label>
+              <input
+                type="text"
+                placeholder="98%"
+                className={s.inputBase}
+                value={form.success}
+                onChange={(e) => setForm((p) => ({ ...p, success: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Rating (1.0 - 5.0)</label>
+              <input
+                className={s.inputBase}
+                placeholder="Rating (1.0 - 5.0)"
+                type="number"
+                min={1}
+                max={5}
+                step={0.1}
+                value={form.rating}
+                onChange={(e) => {
+                  const v = e.target.value;
+                  if (v === "") {
+                    setForm((p) => ({ ...p, rating: "" }));
+                    return;
+                  }
+                  const n = Number(v);
+                  if (Number.isNaN(n)) return;
+                  const clamped = Math.max(1, Math.min(5, n));
+                  const fixed = Math.round(clamped * 10) / 10;
+                  setForm((p) => ({ ...p, rating: fixed.toString() }));
+                }}
+                onBlur={() => {
+                  setForm((p) => {
+                    if (!p.rating) return p;
+                    const n = Number(p.rating);
+                    if (Number.isNaN(n)) return { ...p, rating: "" };
+                    const clamped = Math.max(1, Math.min(5, n));
+                    return { ...p, rating: clamped.toFixed(1) };
+                  });
+                }}
+              />
+            </div>
+
+            <div>
+              <label className={s.label}>Doctor Profile Photo</label>
+              <div className="flex items-center gap-4">
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImage}
+                  className={s.fileInput}
+                />
+                {form.imagePreview && (
+                  <div className="relative">
+                    <img src={form.imagePreview} alt="Preview" className={s.imagePreview} />
+                    <button
+                      type="button"
+                      onClick={removeImage}
+                      className={s.removeImageButton}
+                    >
+                      <XCircle size={16} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="md:col-span-2">
+              <label className={s.label}>About / Doctor Bio</label>
+              <textarea
+                placeholder="Write a brief description about doctor's achievements and specialization..."
+                className={s.textareaBase}
+                rows={3}
+                value={form.about}
+                onChange={(e) => setForm((p) => ({ ...p, about: e.target.value }))}
+              />
+            </div>
+
+            {/* SCHEDULE */}
+            <div className={s.scheduleContainer + " md:col-span-2"}>
+              <div className={s.scheduleHeader}>
+                <Calendar className="text-emerald-600" />
+                <p className={s.scheduleTitle}>Add Schedule Slots</p>
+              </div>
+
+              <div className={s.scheduleInputsContainer}>
+                <input
+                  type="date"
+                  value={slotDate}
+                  min={today}
+                  onChange={(e) => setSlotDate(e.target.value)}
+                  className={s.scheduleDateInput}
+                />
+
+                <select
+                  value={slotHour}
+                  onChange={(e) => setSlotHour(e.target.value)}
+                  className={s.scheduleTimeSelect}
+                >
+                  <option value="">Hour</option>
+                  {Array.from({ length: 12 }).map((_, i) => (
+                    <option key={i} value={String(i + 1)}>
+                      {i + 1}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={slotMinute}
+                  onChange={(e) => setSlotMinute(e.target.value)}
+                  className={s.scheduleTimeSelect}
+                >
+                  {Array.from({ length: 60 }).map((_, i) => (
+                    <option key={i} value={String(i).padStart(2, "0")}>
+                      {String(i).padStart(2, "0")}
+                    </option>
+                  ))}
+                </select>
+
+                <select
+                  value={slotAmpm}
+                  onChange={(e) => setSlotAmpm(e.target.value)}
+                  className={s.scheduleTimeSelect}
+                >
+                  <option>AM</option>
+                  <option>PM</option>
+                </select>
+
+                <button
+                  type="button"
+                  onClick={addSlotToForm}
+                  className={s.addSlotButton + " " + s.cursorPointer}
+                >
+                  <Plus size={18} /> Add Slot
+                </button>
+              </div>
+
+              <div className={s.slotsGrid}>
+                {getFlatSlots(form.schedule).map(({ date, time }) => (
+                  <div
+                    key={date + time}
+                    className={s.slotItem + " " + s.cursorPointer}
+                  >
+                    <span>
+                      {formatDateISO(date)} — {time}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => removeSlot(date, time)}
+                      className="text-rose-500 hover:text-rose-700"
+                      aria-label={`Remove slot ${date} ${time}`}
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
                 ))}
-              </select>
+              </div>
+            </div>
 
-              <select
-                value={slotMinute}
-                onChange={(e) => setSlotMinute(e.target.value)}
-                className={s.scheduleTimeSelect}
-              >
-                {Array.from({ length: 60 }).map((_, i) => (
-                  <option key={i} value={String(i).padStart(2, "0")}>
-                    {String(i).padStart(2, "0")}
-                  </option>
-                ))}
-              </select>
-
-              <select
-                value={slotAmpm}
-                onChange={(e) => setSlotAmpm(e.target.value)}
-                className={s.scheduleTimeSelect}
-              >
-                <option>AM</option>
-                <option>PM</option>
-              </select>
-
+            <div className={s.submitButtonContainer}>
               <button
-                type="button"
-                onClick={addSlotToForm}
-                className={s.addSlotButton + " " + s.cursorPointer}
+                type="submit"
+                disabled={loading}
+                className={`${s.submitButton} ${loading ? s.submitButtonDisabled : s.submitButtonEnabled} ${s.cursorPointer}`}
               >
-                <Plus size={18} /> Add Slot
+                {loading ? "Adding Doctor..." : "Submit Doctor Registration"}
               </button>
             </div>
-
-            <div className={s.slotsGrid}>
-              {getFlatSlots(form.schedule).map(({ date, time }) => (
-                <div
-                  key={date + time}
-                  className={s.slotItem + " " + s.cursorPointer}
-                >
-                  <span>
-                    {formatDateISO(date)} — {time}
-                  </span>
-                  <button
-                    onClick={() => removeSlot(date, time)}
-                    className="text-rose-500"
-                    aria-label={`Remove slot ${date} ${time}`}
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
-            </div>
           </div>
+        </form>
 
-    {/* TOAST */}
-      {toast.show && (
-        <div
-          className={s.toastContainer + " " + 
-            (toast.type === "success" ? s.toastSuccess : s.toastError)}
-        >
-          {toast.type === "success" ? (
-            <CheckCircle size={22} />
-          ) : (
-            <XCircle size={22} />
-          )}
-          <span>{toast.message}</span>
-        </div>
-      )}
+        {/* TOAST */}
+        {toast.show && (
+          <div
+            className={s.toastContainer + " " + 
+              (toast.type === "success" ? s.toastSuccess : s.toastError)}
+          >
+            {toast.type === "success" ? (
+              <CheckCircle size={22} />
+            ) : (
+              <XCircle size={22} />
+            )}
+            <span>{toast.message}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

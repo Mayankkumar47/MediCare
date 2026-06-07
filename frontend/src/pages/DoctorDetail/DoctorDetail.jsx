@@ -20,7 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Clerk client hooks
 import { useAuth, useUser } from "@clerk/clerk-react";
-import { doctorDetailStyles } from "../assets/dummyStyles";
+import { doctorDetailStyles } from "../../assets/dummyStyles";
 
 const API_BASE = "http://localhost:4000";
 
@@ -31,6 +31,27 @@ function getScheduleDates(schedule) {
     typeof schedule === "object" && !Array.isArray(schedule)
       ? Object.keys(schedule)
       : [];
+
+  // Check if any key is a day of the week (Monday, Tuesday, etc.)
+  const weekdays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+  const hasWeekdayKeys = keys.some(k => weekdays.includes(k.toLowerCase()));
+
+  if (hasWeekdayKeys) {
+    // Generate dates for the next 7 days starting from today
+    const dates = [];
+    const today = new Date();
+    for (let i = 0; i < 7; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() + i);
+      const dayName = d.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+      // Check if this weekday exists in schedule and has slots
+      const matchingKey = keys.find(k => k.toLowerCase() === dayName);
+      if (matchingKey && Array.isArray(schedule[matchingKey]) && schedule[matchingKey].length > 0) {
+        dates.push(d);
+      }
+    }
+    return dates;
+  }
 
   // Parse keys into Date objects (supporting YYYY-MM-DD and ISO)
   const parsed = keys
@@ -111,7 +132,7 @@ export default function DoctorDetail() {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Clerk hooks
-  const { getToken, isLoaded: authLoaded } = useAuth();
+  const { getToken, userId, isLoaded: authLoaded } = useAuth();
   const { isSignedIn, user, isLoaded: userLoaded } = useUser();
 
   useEffect(() => {
@@ -180,8 +201,17 @@ export default function DoctorDetail() {
 
   const slots = useMemo(() => {
     if (!selectedDate || !doctor?.schedule) return [];
-    const key = selectedDate.toISOString().split("T")[0];
-    return doctor.schedule && doctor.schedule[key] ? doctor.schedule[key] : [];
+    const schedule = doctor.schedule;
+    // Try ISO date key first (YYYY-MM-DD)
+    const isoKey = selectedDate.toISOString().split("T")[0];
+    if (schedule[isoKey] && Array.isArray(schedule[isoKey])) return schedule[isoKey];
+    // Try weekday name key (e.g. "monday", "tuesday")
+    const dayName = selectedDate.toLocaleDateString("en-US", { weekday: "long" }).toLowerCase();
+    if (schedule[dayName] && Array.isArray(schedule[dayName])) return schedule[dayName];
+    // Try capitalized weekday key
+    const dayCapitalized = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+    if (schedule[dayCapitalized] && Array.isArray(schedule[dayCapitalized])) return schedule[dayCapitalized];
+    return [];
   }, [selectedDate, doctor]);
 
   // Mobile input handlers: only digits, max 10
@@ -232,18 +262,10 @@ export default function DoctorDetail() {
       return;
     }
 
-    if (!authLoaded || !userLoaded) {
+    if (!authLoaded) {
       toast.error("Authentication not ready. Please try again in a moment.", {
         position: "top-center",
         autoClose: 2000,
-      });
-      return;
-    }
-
-    if (!isSignedIn) {
-      toast.error("You must sign in to create an appointment.", {
-        position: "top-center",
-        autoClose: 2200,
       });
       return;
     }
@@ -262,6 +284,7 @@ export default function DoctorDetail() {
 
     // optional owner from doctor object (backend will prefer doctor.owner)
     const ownerValue = doctor?.owner || undefined;
+    const createdByValue = userId || "guest_user";
 
     const payload = {
       doctorId: doctor._id || doctor.id,
@@ -282,10 +305,11 @@ export default function DoctorDetail() {
       fees: fee,
       paymentMethod: paymentMethod || "Online",
       email: formData.email || undefined,
+      createdBy: createdByValue,
     };
 
     try {
-      const token = await getToken();
+      const token = isSignedIn ? await getToken() : "mock_user_guest";
       if (!token) {
         throw new Error("Failed to obtain authentication token.");
       }

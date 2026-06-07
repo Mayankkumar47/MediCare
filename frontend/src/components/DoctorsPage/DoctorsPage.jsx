@@ -1,3 +1,11 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, X, Calendar, AlertCircle, Award, ChevronDown } from 'lucide-react';
+import { doctorsPageStyles } from '../../assets/dummyStyles';
+
+import API_BASE from '../../api.js';
+
+const DoctorsPage = () => {
   const [allDoctors, setAllDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -70,7 +78,7 @@
     return () => {
       mounted = false;
     };
-  }, [API_BASE]);
+  }, []);
 
   const filteredDoctors = useMemo(() => {
     const q = searchTerm.trim().toLowerCase();
@@ -131,7 +139,69 @@
     }
   };
 
+  return (
+    <div className={doctorsPageStyles.mainContainer}>
+      <div className={doctorsPageStyles.backgroundShape1} />
+      <div className={doctorsPageStyles.backgroundShape2} />
 
+      <div className={doctorsPageStyles.wrapper}>
+        {/* Header */}
+        <div className={doctorsPageStyles.headerContainer}>
+          <h1 className={doctorsPageStyles.headerTitle}>Meet Our Expert Doctors</h1>
+          <p className={doctorsPageStyles.headerSubtitle}>
+            Search and book appointments with verified medical professionals.
+          </p>
+        </div>
+
+        {/* Search */}
+        <div className={doctorsPageStyles.searchContainer}>
+          <div className={doctorsPageStyles.searchWrapper}>
+            <Search className={doctorsPageStyles.searchIcon} />
+            <input
+              type="text"
+              placeholder="Search doctor by name or specialty..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={doctorsPageStyles.searchInput}
+            />
+            {searchTerm && (
+              <button onClick={() => setSearchTerm("")} className={doctorsPageStyles.clearButton}>
+                <X className="w-5 h-5" />
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Loading / Error States */}
+        {loading ? (
+          <div className={doctorsPageStyles.skeletonGrid}>
+            {Array.from({ length: 8 }).map((_, idx) => (
+              <div key={idx} className={doctorsPageStyles.skeletonCard}>
+                <div className={doctorsPageStyles.skeletonImage} />
+                <div className={doctorsPageStyles.skeletonName} />
+                <div className={doctorsPageStyles.skeletonSpecialization} />
+                <div className={doctorsPageStyles.skeletonButton} />
+              </div>
+            ))}
+          </div>
+        ) : error ? (
+          <div className={doctorsPageStyles.errorContainer}>
+            <p className={doctorsPageStyles.errorText}>{error}</p>
+            <button onClick={retry} className={doctorsPageStyles.retryButton}>
+              Retry Loading
+            </button>
+          </div>
+        ) : (
+          <>
+            {/* Doctors Grid */}
+            <div className={doctorsPageStyles.doctorsGrid}>
+              {displayedDoctors.map((doctor) => (
+                <div
+                  key={doctor.id}
+                  className={`${doctorsPageStyles.doctorCard} ${
+                    !doctor.available ? doctorsPageStyles.doctorCardUnavailable : ""
+                  }`}
+                >
                   {doctor.available ? (
                     <Link
                       to={`/doctors/${doctor.id}`}
@@ -168,8 +238,59 @@
                     </div>
                   )}
 
-      {/* Animations */}
-      <style>{`
+                  <h3 className={doctorsPageStyles.doctorName}>{doctor.name}</h3>
+                  <p className={doctorsPageStyles.doctorSpecialization}>{doctor.specialization}</p>
+
+                  <div className={doctorsPageStyles.experienceBadge}>
+                    <Award className={doctorsPageStyles.experienceIcon} />
+                    <span>{doctor.experience} Yrs Experience</span>
+                  </div>
+
+                  <div className="w-full mt-2">
+                    {doctor.available ? (
+                      <Link
+                        to={`/doctors/${doctor.id}`}
+                        state={{ doctor: doctor.raw || doctor }}
+                        className={doctorsPageStyles.bookButton}
+                      >
+                        <Calendar className={doctorsPageStyles.bookButtonIcon} />
+                        Book Appointment
+                      </Link>
+                    ) : (
+                      <button disabled className={doctorsPageStyles.notAvailableButton}>
+                        <AlertCircle className={doctorsPageStyles.notAvailableIcon} />
+                        Not Available
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Empty State */}
+            {filteredDoctors.length === 0 && (
+              <div className={doctorsPageStyles.noResults}>
+                No doctors found matching your search.
+              </div>
+            )}
+
+            {/* Show More */}
+            {filteredDoctors.length > 8 && !showAll && (
+              <div className={doctorsPageStyles.showMoreContainer}>
+                <button
+                  onClick={() => setShowAll(true)}
+                  className={doctorsPageStyles.showMoreButton}
+                >
+                  <ChevronDown className={doctorsPageStyles.showMoreIcon} />
+                  Show More
+                </button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+
+      <style dangerouslySetInnerHTML={{ __html: `
         @keyframes fade-in {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
@@ -193,4 +314,9 @@
         @media (prefers-reduced-motion: reduce) {
           * { animation: none !important; transition: none !important; }
         }
-      `}</style>
+      `}} />
+    </div>
+  );
+};
+
+export default DoctorsPage;

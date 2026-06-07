@@ -1,3 +1,9 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { Search, Trash, ChevronDown, Calendar, Users, Star, GraduationCap, MapPin, Briefcase } from "lucide-react";
+import { doctorListStyles, keyframesStyles } from "../../assets/dummyStyles";
+
+import API_BASE from '../../api.js';
+
 function formatDateISO(iso) {
   if (!iso || typeof iso !== "string") return iso;
   const parts = iso.split("-");
@@ -66,6 +72,7 @@ function getSortedScheduleDates(scheduleLike) {
   return [...past, ...future].map((p) => p.ds);
 }
 
+export default function ListPage() {
   const [doctors, setDoctors] = useState([]);
   const [expanded, setExpanded] = useState(null);
   const [query, setQuery] = useState("");
@@ -179,14 +186,144 @@ function getSortedScheduleDates(scheduleLike) {
     setShowAll(false);
   }
 
+  return (
+    <div className={doctorListStyles.container}>
+      <style>{keyframesStyles}</style>
 
-   
-  
+      {/* Header */}
+      <div className={doctorListStyles.headerContainer}>
+        <div className={doctorListStyles.headerTopSection}>
+          <div className={doctorListStyles.headerIconContainer}>
+            <div className={doctorListStyles.headerIcon}>
+              <Users className={doctorListStyles.headerIconSvg} />
+            </div>
+            <div>
+              <h1 className={doctorListStyles.headerTitle}>All Doctors Register</h1>
+              <p className={doctorListStyles.headerSubtitle}>Directory of medical practitioners and schedule calendars.</p>
+            </div>
+          </div>
 
+          <div className={doctorListStyles.headerSearchContainer}>
+            <div className={doctorListStyles.searchBox}>
+              <Search className={doctorListStyles.searchIcon} size={18} />
+              <input
+                type="text"
+                placeholder="Search by doctor name or speciality..."
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                className={doctorListStyles.searchInput}
+              />
+            </div>
+            {query && (
+              <button onClick={() => setQuery("")} className={doctorListStyles.clearButton}>
+                Clear
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Filter buttons */}
+        <div className={doctorListStyles.filterContainer}>
+          <button
+            onClick={() => applyStatusFilter("available")}
+            className={doctorListStyles.filterButton(filterStatus === "available", "emerald")}
+          >
+            Available Only
+          </button>
+          <button
+            onClick={() => applyStatusFilter("unavailable")}
+            className={doctorListStyles.filterButton(filterStatus === "unavailable", "red")}
+          >
+            Unavailable Only
+          </button>
+        </div>
+      </div>
+
+      {loading && (
+        <div className={doctorListStyles.loadingContainer}>
+          <p>Loading clinical practitioners list...</p>
+        </div>
+      )}
+
+      {!loading && displayed.length === 0 && (
+        <div className={doctorListStyles.noResultsContainer}>
+          <p>No doctors register match your criteria.</p>
+        </div>
+      )}
+
+      {/* Doctors Grid */}
+      <div className={doctorListStyles.gridContainer}>
+        {displayed.map((doc) => {
+          const id = doc._id || doc.id;
+          const isOpen = expanded === id;
+          const isAvailable = (doc.availability || "").toLowerCase() === "available";
+          const scheduleMap = doc.schedule || {};
+          const sortedDates = getSortedScheduleDates(scheduleMap);
+
+          return (
+            <article key={id} className={doctorListStyles.article}>
+              <div className={doctorListStyles.articleContent}>
+                <img
+                  src={doc.imageUrl || "https://i.pravatar.cc/150?u=" + id}
+                  alt={doc.name}
+                  className={doc.imageUrl ? doctorListStyles.doctorImage : `${doctorListStyles.doctorImage} border-slate-300`}
+                />
+
+                <div className={doctorListStyles.doctorInfoContainer}>
+                  <div className={doctorListStyles.doctorHeader}>
+                    <div>
+                      <h3 className={doctorListStyles.doctorName}>
+                        {doc.name}
+                        <span className={doctorListStyles.availabilityBadge(isAvailable)}>
+                          <span className={doctorListStyles.availabilityDot(isAvailable)} />
+                          {doc.availability}
+                        </span>
+                      </h3>
+                      <p className={doctorListStyles.doctorDetails}>
+                        {doc.specialization} • {doc.experience}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-2 mt-2 sm:mt-0">
+                      <div className={doctorListStyles.ratingContainer}>
+                        <span className={doctorListStyles.rating}>
+                          <Star className="text-amber-500 fill-amber-500" size={14} />
+                          {doc.rating}
+                        </span>
+                      </div>
+                      <button
+                        onClick={() => toggle(id)}
+                        className={doctorListStyles.toggleButton(isOpen)}
+                        aria-expanded={isOpen}
+                        aria-label="Toggle details view"
+                      >
+                        <ChevronDown size={18} className="text-emerald-700" />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className={doctorListStyles.statsContainer}>
+                    <div className="flex items-center justify-between w-full">
+                      <div className={doctorListStyles.feesValue}>
+                        <span className={doctorListStyles.feesLabel}>Fee:</span>
+                        <span>₹ {doc.fee}</span>
+                      </div>
+                      <button
+                        onClick={() => removeDoctor(id)}
+                        className={doctorListStyles.deleteButton}
+                      >
+                        <Trash size={14} /> Delete
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Expandable Schedule & About */}
               <div
                 className={doctorListStyles.expandableContent}
                 style={{
-                  maxHeight: isOpen ? (isMobileScreen ? 320 : 600) : 0,
+                  maxHeight: isOpen ? (isMobileScreen ? 450 : 600) : 0,
                   transition:
                     "max-height 420ms cubic-bezier(.2,.9,.2,1), padding 220ms ease",
                   paddingTop: isOpen ? 16 : 0,
@@ -194,71 +331,96 @@ function getSortedScheduleDates(scheduleLike) {
                 }}
               >
                 {isOpen && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                    <div className={doctorListStyles.aboutSection}>
-                      <h4 className={doctorListStyles.aboutHeading}>About</h4>
-                      <p className={doctorListStyles.aboutText}>{doc.about}</p>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-4 border-t border-emerald-100 bg-white">
+                    <div className={doctorListStyles.aboutSection + " md:col-span-2"}>
+                      <h4 className={doctorListStyles.aboutHeading}>
+                        <Briefcase size={16} className="inline mr-2 text-emerald-600" />
+                        About Doctor
+                      </h4>
+                      <p className={doctorListStyles.aboutText}>{doc.about || "No biography provided."}</p>
 
                       <div className="mt-4">
                         <div className={doctorListStyles.qualificationsHeading}>
-                          Qualifications
+                          <GraduationCap size={16} className="inline mr-2 text-emerald-600" />
+                          Qualifications & Education
                         </div>
                         <div className={doctorListStyles.qualificationsText}>
-                          {doc.qualifications}
+                          {doc.qualifications || "Not specified."}
                         </div>
                       </div>
 
                       <div className="mt-4">
                         <div className={doctorListStyles.scheduleHeading}>
-                          Schedule
+                          <Calendar size={16} className="inline mr-2 text-emerald-600" />
+                          Availability Schedule
                         </div>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                          {sortedDates.map((date) => {
-                            const slots = scheduleMap[date] || [];
-                            return (
-                              <div key={date} className="min-w-full md:min-w-0">
-                                <div className={doctorListStyles.scheduleDate}>
-                                  {formatDateISO(date)}
+                        {sortedDates.length === 0 ? (
+                          <p className="text-xs text-slate-400 mt-1">No schedule slots configured.</p>
+                        ) : (
+                          <div className="mt-2 space-y-3 max-h-44 overflow-y-auto pr-1">
+                            {sortedDates.map((date) => {
+                              const slots = scheduleMap[date] || [];
+                              return (
+                                <div key={date} className="border-b border-slate-50 pb-2">
+                                  <div className={doctorListStyles.scheduleDate}>
+                                    {formatDateISO(date)}
+                                  </div>
+                                  <div className="mt-1 flex flex-wrap gap-1.5">
+                                    {slots.map((s, i) => (
+                                      <span
+                                        key={i}
+                                        className={doctorListStyles.scheduleSlot}
+                                      >
+                                        {s}
+                                      </span>
+                                    ))}
+                                  </div>
                                 </div>
-                                <div className="mt-1 flex flex-wrap gap-2">
-                                  {slots.map((s, i) => (
-                                    <span
-                                      key={i}
-                                      className={doctorListStyles.scheduleSlot}
-                                    >
-                                      {s}
-                                    </span>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+                              );
+                            })}
+                          </div>
+                        )}
                       </div>
                     </div>
 
-                    <aside className={doctorListStyles.statsSidebar}>
-                      <div className={doctorListStyles.statsItemHeading}>
-                        Success
-                      </div>
-                      <div className={doctorListStyles.statsItemValue}>
-                        {doc.success}%
-                      </div>
-
-                      <div className={doctorListStyles.statsItemHeading}>
-                        Patients
-                      </div>
-                      <div className={doctorListStyles.statsItemValue}>
-                        {doc.patients}
-                      </div>
-
-                      <div className={doctorListStyles.statsItemHeading}>
-                        Location
-                      </div>
-                      <div className={doctorListStyles.locationValue}>
-                        {doc.location}
+                    <aside className={doctorListStyles.statsSidebar + " md:col-span-1 border-l border-slate-100 pl-4"}>
+                      <div className="space-y-4">
+                        <div>
+                          <div className={doctorListStyles.statsItemHeading}>Success Rate</div>
+                          <div className="text-xl font-semibold text-emerald-600">{doc.success || "98%"}</div>
+                        </div>
+                        <div>
+                          <div className={doctorListStyles.statsItemHeading}>Patients Managed</div>
+                          <div className="text-xl font-semibold text-slate-700">{doc.patients || "100+"}</div>
+                        </div>
+                        <div>
+                          <div className={doctorListStyles.statsItemHeading}>Clinical Room</div>
+                          <div className={doctorListStyles.locationValue}>
+                            <MapPin size={14} className="inline mr-1 text-slate-400" />
+                            {doc.location || "Main Clinic"}
+                          </div>
+                        </div>
                       </div>
                     </aside>
                   </div>
                 )}
               </div>
+            </article>
+          );
+        })}
+      </div>
+
+      {/* Show more button */}
+      {filtered.length > displayed.length && (
+        <div className={doctorListStyles.showMoreContainer}>
+          <button
+            onClick={() => setShowAll(true)}
+            className={doctorListStyles.showMoreButton}
+          >
+            Show All Doctors ({filtered.length})
+          </button>
+        </div>
+      )}
+    </div>
+  );
+}

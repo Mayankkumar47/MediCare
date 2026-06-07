@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Build output
+dist/
+build/
+**/dist/
+**/build/
+
+# Environment files - NEVER commit secrets
+.env
+**/.env
+.env.local
+.env.production
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+desktop.ini
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+
+# Uploads (locally generated, not part of source)
+backend/public/uploads/
+backend/uploads/
+
+# Lock files (keep package-lock for reproducible installs)
+# package-lock.json

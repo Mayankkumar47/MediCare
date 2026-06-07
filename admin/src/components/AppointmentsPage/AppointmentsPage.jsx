@@ -1,3 +1,9 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { Calendar, Search, Filter, BadgeIndianRupee } from "lucide-react";
+import { pageStyles, statusClasses, keyframesStyles } from "../../assets/dummyStyles";
+
+import API_BASE from '../../api.js';
+
 function formatDateISO(iso) {
   try {
     const d = new Date(iso + "T00:00:00");
@@ -77,7 +83,7 @@ export default function AppointmentsPage() {
               time: a.time || (a.slot && a.slot.time) || "00:00 AM",
             },
             status: a.status || (a.payment && a.payment.status) || "Pending",
-            raw: a, // keep original in case we need it
+            raw: a,
           };
         });
         setAppointments(items);
@@ -152,16 +158,17 @@ export default function AppointmentsPage() {
       );
       setShowAll(true);
 
-      const res = await fetch(`${API_BASE}/api/appointments/${id}/cancel`, {
-        method: "POST",
+      const res = await fetch(`${API_BASE}/api/appointments/${id}`, {
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: "Canceled" }),
       });
       if (!res.ok) {
         const body = await res.json().catch(() => ({}));
         throw new Error(body?.message || `Cancel failed (${res.status})`);
       }
       const data = await res.json();
-      const updated = data?.appointment || data?.appointments || null;
+      const updated = data?.appointment || data?.data || null;
       if (updated) {
         setAppointments((prev) =>
           prev.map((p) =>
@@ -182,11 +189,12 @@ export default function AppointmentsPage() {
     } catch (err) {
       console.error("Cancel error:", err);
       setError(err.message || "Failed to cancel appointment");
+      // Reload on error
       try {
         const reload = await fetch(`${API_BASE}/api/appointments?limit=200`);
         if (reload.ok) {
           const body = await reload.json();
-          const items = (body?.appointments || []).map((a) => ({
+          const items = (body?.appointments || body?.data || []).map((a) => ({
             id: a._id || a.id,
             patientName: a.patientName || "",
             age: a.age || "",
@@ -208,90 +216,201 @@ export default function AppointmentsPage() {
           }));
           setAppointments(items);
         }
-      } catch (e) {
-      }
+      } catch (e) {}
     }
   }
-                <div
-                  key={a.id}
-                  style={{
-                    animation: `fadeUp 420ms cubic-bezier(.2,.9,.2,1) forwards`,
-                    animationDelay: `${idx * 70}ms`,
-                    opacity: 0,
-                  }}
-                  className={pageStyles.card}
-                >
-                  <div className={pageStyles.cardHeader}>
-                    <div className="min-w-0">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <h3 className={pageStyles.cardTitle}>
-                          {a.patientName}
-                        </h3>
 
-                        <div className={pageStyles.patientInfo}>
-                          <span>{a.age ? `${a.age} yrs` : ""}</span>
-                          <span> {a.age ? ":" : ""} </span>
-                          <span>{a.gender}</span>
-                          <span className="hidden md:inline"> : </span>
-                          <span className=" max-w-[120px]">{a.mobile}</span>
-                        </div>
-                      </div>
+  function handleClear() {
+    setQuery("");
+    setFilterDate("");
+    setFilterSpeciality("all");
+  }
 
-                      <div className={pageStyles.doctorInfo}>
-                        {a.doctorName} :{" "}
-                        <span className={pageStyles.doctorSpeciality}>
-                          {a.speciality}
-                        </span>
+  return (
+    <div className={pageStyles.container}>
+      <style>{keyframesStyles}</style>
+      
+      <div className={pageStyles.maxWidthContainer}>
+        {/* Header */}
+        <div className={pageStyles.headerContainer}>
+          <div className={pageStyles.headerTitleSection}>
+            <h1 className={pageStyles.headerTitle}>All Appointments</h1>
+            <p className={pageStyles.headerSubtitle}>View and manage all patient bookings across clinical departments.</p>
+          </div>
+          
+          <div className={pageStyles.headerControlsSection}>
+            <div className={pageStyles.filterContainer}>
+              <div className={pageStyles.searchContainer}>
+                <Search className={pageStyles.searchIcon} size={16} />
+                <input
+                  type="text"
+                  placeholder="Search patient, doctor..."
+                  value={query}
+                  onChange={(e) => setQuery(e.target.value)}
+                  className={pageStyles.searchInput}
+                />
+              </div>
+
+              <div className={pageStyles.dateFilter}>
+                <Calendar className={pageStyles.dateFilterIcon} size={16} />
+                <input
+                  type="date"
+                  value={filterDate}
+                  onChange={(e) => setFilterDate(e.target.value)}
+                  className={pageStyles.dateInput}
+                />
+              </div>
+
+              <select
+                value={filterSpeciality}
+                onChange={(e) => setFilterSpeciality(e.target.value)}
+                className={pageStyles.selectFilter}
+              >
+                {specialities.map((spec) => (
+                  <option key={spec} value={spec}>
+                    {spec === "all" ? "All Specialties" : spec}
+                  </option>
+                ))}
+              </select>
+
+              {(query || filterDate || filterSpeciality !== "all") && (
+                <button onClick={handleClear} className={pageStyles.clearButton}>
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Loading / Error States */}
+        {loading && (
+          <div className={pageStyles.loadingErrorContainer}>
+            <p className="text-emerald-700">Loading appointments list...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className={pageStyles.errorContainer}>
+            <p className="text-red-700 font-medium">Error: {error}</p>
+          </div>
+        )}
+
+        {!loading && !error && displayed.length === 0 && (
+          <div className={pageStyles.noResultsContainer}>
+            <p className="text-emerald-600">No appointments match your filters.</p>
+          </div>
+        )}
+
+        {/* Grid List */}
+        <div className={pageStyles.gridContainer}>
+          {displayed.map((a, idx) => {
+            const statusLower = (a.status || "").toLowerCase();
+            const isCompleted = statusLower === "completed";
+            const isCancelled = statusLower === "canceled" || statusLower === "cancelled";
+            const isDisabled = isCompleted || isCancelled;
+
+            return (
+              <div
+                key={a.id}
+                style={{
+                  animation: `fadeUp 420ms cubic-bezier(.2,.9,.2,1) forwards`,
+                  animationDelay: `${idx * 70}ms`,
+                  opacity: 0,
+                }}
+                className={pageStyles.card}
+              >
+                <div className={pageStyles.cardHeader}>
+                  <div className="min-w-0">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <h3 className={pageStyles.cardTitle}>
+                        {a.patientName}
+                      </h3>
+
+                      <div className={pageStyles.patientInfo}>
+                        <span>{a.age ? `${a.age} yrs` : ""}</span>
+                        <span> {a.age ? "•" : ""} </span>
+                        <span>{a.gender}</span>
                       </div>
                     </div>
 
-                    <div className="text-right">
-                      <div className={pageStyles.feeLabel}>
-                        Fees
-                      </div>
-                      <div className={pageStyles.feeAmount}>
-                        <BadgeIndianRupee size={16} />
-                        <span>{a.fee}</span>
-                      </div>
+                    <div className={pageStyles.doctorInfo}>
+                      {a.doctorName} •{" "}
+                      <span className={pageStyles.doctorSpeciality}>
+                        {a.speciality}
+                      </span>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3 flex-wrap">
-                    <div className={pageStyles.slotContainer}>
-                      <Calendar size={14} className={pageStyles.slotIcon} />
-                      <span>
-                        {formatDateISO(a.slot.date)} — {a.slot.time}
-                      </span>
+                  <div className="text-right">
+                    <div className={pageStyles.feeLabel}>
+                      Fees
                     </div>
-
-                    <div
-                      className={`${pageStyles.statusBadge} ${statusClasses(a.status)}`}
-                    >
-                      {a.status ? a.status.toUpperCase() : "PENDING"}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      {isAdmin && (
-                        <button
-                          onClick={() => adminCancelAppointment(a.id)}
-                          title={
-                            isDisabled
-                              ? isCompleted
-                                ? "Cannot cancel a completed appointment"
-                                : "Already cancelled"
-                              : "Admin Cancel (mark as cancelled)"
-                          }
-                          disabled={isDisabled}
-                          aria-disabled={isDisabled}
-                          className={pageStyles.cancelButton(isDisabled, isCompleted)}
-                        >
-                          {isDisabled
-                            ? isCompleted
-                              ? "Completed"
-                              : "Admin Cancelled"
-                            : "Admin Cancel"}
-                        </button>
-                      )}
+                    <div className={pageStyles.feeAmount}>
+                      <BadgeIndianRupee size={16} />
+                      <span>{a.fee}</span>
                     </div>
                   </div>
                 </div>
+
+                <div className="mt-1 text-xs text-slate-500 font-medium">
+                  Ph: {a.mobile}
+                </div>
+
+                <div className="flex items-center justify-between gap-3 flex-wrap mt-3 pt-3 border-t border-emerald-50/50">
+                  <div className={pageStyles.slotContainer}>
+                    <Calendar size={14} className={pageStyles.slotIcon} />
+                    <span>
+                      {formatDateISO(a.slot.date)} — {a.slot.time}
+                    </span>
+                  </div>
+
+                  <div
+                    className={`${pageStyles.statusBadge} ${statusClasses(a.status)}`}
+                  >
+                    {a.status ? a.status.toUpperCase() : "PENDING"}
+                  </div>
+
+                  <div className="flex items-center gap-2 w-full justify-end mt-2">
+                    {isAdmin && (
+                      <button
+                        onClick={() => adminCancelAppointment(a.id)}
+                        title={
+                          isDisabled
+                            ? isCompleted
+                              ? "Cannot cancel a completed appointment"
+                              : "Already cancelled"
+                            : "Admin Cancel (mark as cancelled)"
+                        }
+                        disabled={isDisabled}
+                        aria-disabled={isDisabled}
+                        className={pageStyles.cancelButton(isDisabled, isCompleted)}
+                      >
+                        {isDisabled
+                          ? isCompleted
+                            ? "Completed"
+                            : "Cancelled"
+                          : "Cancel Appointment"}
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Show More */}
+        {sortedFiltered.length > displayed.length && (
+          <div className="flex justify-center mt-8">
+            <button
+              onClick={() => setShowAll(true)}
+              className={pageStyles.showMoreButton}
+            >
+              Show All ({sortedFiltered.length})
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

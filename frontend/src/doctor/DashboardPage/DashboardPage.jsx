@@ -8,9 +8,9 @@ import {
   Phone,
   BadgeIndianRupee,
 } from "lucide-react";
-import { dashboardStyles } from "../assets/dummyStyles";
+import { dashboardStyles } from "../../assets/dummyStyles";
 
-const API_BASE = "http://localhost:4000";
+import API_BASE from '../../api.js';
 
 function parseDateTime(date, time) {
   return new Date(`${date}T${time}:00`);

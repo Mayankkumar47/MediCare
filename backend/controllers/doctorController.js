@@ -1,3 +1,7 @@
+import Doctor from "../models/Doctor.js";
+import { uploadToCloudinary, deleteFromCloudinary } from "../config/cloudinary.js";
+import jwt from "jsonwebtoken";
+
 const parseTimeToMinutes = (t = "") => {
   const [time = "0:00", ampm = ""] = (t || "").split(" ");
   const [hh = 0, mm = 0] = time.split(":").map(Number);
@@ -51,27 +55,7 @@ function normalizeDocForClient(raw = {}) {
   return doc;
 }
 
-// createDoctor
-    const doc = new Doctor({
-      email: emailLC,
-      password: body.password,
-      name: body.name,
-      specialization: body.specialization || "",
-      imageUrl,
-      imagePublicId,
-      availability: body.availability || "Available",
-      experience: body.experience || "",
-      qualifications: body.qualifications || "",
-      location: body.location || "",
-      about: body.about || "",
-      fee: body.fee !== undefined ? Number(body.fee) : 0,
-      schedule,
-      success: body.success || "",
-      patients: body.patients || "",
-      rating: body.rating !== undefined ? Number(body.rating) : 0,
-    });
-    
-//
+// Get all doctors with filters
 export const getDoctors = async (req, res) => {
   try {
     const { q = "", limit: limitRaw = 200, page: pageRaw = 1 } = req.query;
@@ -147,6 +131,7 @@ export const getDoctors = async (req, res) => {
       qualifications: d.qualifications ?? "",
       location: d.location ?? "",
       success: d.success ?? "",
+      email: d.email || "",
       raw: d,
     }));
 
@@ -158,15 +143,90 @@ export const getDoctors = async (req, res) => {
   }
 };
 
+// Get Doctor By ID
+export const getDoctorById = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await Doctor.findById(id).lean();
+    if (!doc) {
+      return res.status(404).json({ success: false, message: "Doctor not found" });
+    }
+    const out = normalizeDocForClient(doc);
+    delete out.password;
+    return res.json({ success: true, data: out });
+  } catch (err) {
+    console.error("getDoctorById error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
 
-export async function updateDoctor(req, res) {
+// Create Doctor (Admin Panel Action)
+export const createDoctor = async (req, res) => {
+  try {
+    const body = req.body || {};
+    const { email, password, name } = body;
+    
+    if (!email || !password || !name) {
+      return res.status(400).json({ success: false, message: "Name, email and password are required" });
+    }
+
+    const emailLC = email.toLowerCase();
+    const existing = await Doctor.findOne({ email: emailLC });
+    if (existing) {
+      return res.status(409).json({ success: false, message: "Email already in use" });
+    }
+
+    let imageUrl = null;
+    let imagePublicId = null;
+    if (req.file) {
+      const upload = await uploadToCloudinary(req.file.path, "doctors");
+      if (upload) {
+        imageUrl = upload.secure_url;
+        imagePublicId = upload.public_id;
+      }
+    }
+
+    const schedule = parseScheduleInput(body.schedule);
+
+    const doc = new Doctor({
+      email: emailLC,
+      password: password, // will be hashed by Mongoose pre-save hook
+      name: name,
+      specialization: body.specialization || "",
+      imageUrl,
+      imagePublicId,
+      availability: body.availability || "Available",
+      experience: body.experience || "",
+      qualifications: body.qualifications || "",
+      location: body.location || "",
+      about: body.about || "",
+      fee: body.fee !== undefined ? Number(body.fee) : 0,
+      schedule,
+      success: body.success || "",
+      patients: body.patients || "",
+      rating: body.rating !== undefined ? Number(body.rating) : 0,
+    });
+
+    await doc.save();
+
+    const out = normalizeDocForClient(doc.toObject());
+    delete out.password;
+    
+    // Generate token
+    const token = jwt.sign({ id: doc._id, role: "doctor" }, process.env.JWT_SECRET, { expiresIn: "30d" });
+
+    return res.status(201).json({ success: true, data: out, token });
+  } catch (err) {
+    console.error("createDoctor error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Update Doctor
+export const updateDoctor = async (req, res) => {
   try {
     const { id } = req.params;
     const body = req.body || {};
-
-    if (!req.doctor || String(req.doctor._id || req.doctor.id) !== String(id)) {
-      return res.status(403).json({ success: false, message: "Not authorized to update this doctor" });
-    }
 
     const existing = await Doctor.findById(id);
     if (!existing) return res.status(404).json({ success: false, message: "Doctor not found" });
@@ -175,8 +235,8 @@ export async function updateDoctor(req, res) {
       const uploaded = await uploadToCloudinary(req.file.path, "doctors");
       if (uploaded) {
         const previousPublicId = existing.imagePublicId;
-        existing.imageUrl = uploaded.secure_url || uploaded.url || existing.imageUrl;
-        existing.imagePublicId = uploaded.public_id || uploaded.publicId || existing.imagePublicId;
+        existing.imageUrl = uploaded.secure_url || existing.imageUrl;
+        existing.imagePublicId = uploaded.public_id || existing.imagePublicId;
         if (previousPublicId && previousPublicId !== existing.imagePublicId) {
           deleteFromCloudinary(previousPublicId).catch((e) => console.warn("deleteFromCloudinary warning:", e?.message || e));
         }
@@ -190,13 +250,13 @@ export async function updateDoctor(req, res) {
     const updatable = ["name", "specialization", "experience", "qualifications", "location", "about", "fee", "availability", "success", "patients", "rating"];
     updatable.forEach((k) => { if (body[k] !== undefined) existing[k] = body[k]; });
 
-    if (body.email && body.email !== existing.email) {
+    if (body.email && body.email.toLowerCase() !== existing.email) {
       const other = await Doctor.findOne({ email: body.email.toLowerCase() });
       if (other && other._id.toString() !== id) return res.status(409).json({ success: false, message: "Email already in use" });
       existing.email = body.email.toLowerCase();
     }
 
-    if (body.password) existing.password = body.password;
+    if (body.password) existing.password = body.password; // hook will re-hash if modified
 
     await existing.save();
 
@@ -207,4 +267,54 @@ export async function updateDoctor(req, res) {
     console.error("updateDoctor error:", err);
     return res.status(500).json({ success: false, message: "Server error" });
   }
-}
+};
+
+// Delete Doctor
+export const deleteDoctor = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const doc = await Doctor.findById(id);
+    if (!doc) {
+      return res.status(404).json({ success: false, message: "Doctor not found" });
+    }
+
+    if (doc.imagePublicId) {
+      await deleteFromCloudinary(doc.imagePublicId);
+    }
+
+    await Doctor.findByIdAndDelete(id);
+    return res.json({ success: true, message: "Doctor deleted successfully" });
+  } catch (err) {
+    console.error("deleteDoctor error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+// Doctor Login
+export const loginDoctor = async (req, res) => {
+  try {
+    const { email, password } = req.body || {};
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password are required" });
+    }
+
+    const doc = await Doctor.findOne({ email: email.toLowerCase() });
+    if (!doc) {
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
+    }
+
+    const isMatch = await doc.comparePassword(password);
+    if (!isMatch) {
+      return res.status(401).json({ success: false, message: "Invalid email or password" });
+    }
+
+    const out = normalizeDocForClient(doc.toObject());
+    delete out.password;
+
+    const token = jwt.sign({ id: doc._id, role: "doctor" }, process.env.JWT_SECRET, { expiresIn: "30d" });
+    return res.json({ success: true, data: out, doctor: out, token });
+  } catch (err) {
+    console.error("loginDoctor error:", err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};

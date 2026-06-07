@@ -1,34 +1,84 @@
-const ScrollButton = () => {
-  const [visible, setVisible] = useState(false);
+import React from 'react';
+import { Route, Routes, Outlet, Navigate } from 'react-router-dom';
+import Navbar from './components/Navbar/Navbar';
+import Footer from './components/Footer/Footer';
+import Home from './pages/Home';
+import DoctorsPage from './components/DoctorsPage/DoctorsPage';
+import DoctorDetail from './pages/DoctorDetail/DoctorDetail';
+import ServicePage from './components/ServicePage/ServicePage';
+import ServiceDetail from './pages/ServiceDetailPage/ServiceDetailPage';
+import ContactPage from './components/ContactPage/ContactPage';
+import AppointmentPage from './components/AppointmentPage/AppointmentPage';
+import LoginPage from './components/LoginPage/LoginPage';
+import CheckoutSuccessPage from './pages/CheckoutSuccessPage';
+import CheckoutCancelPage from './pages/CheckoutCancelPage';
 
-  useEffect(() => {
-    const handleScroll = () => setVisible(window.scrollY > 200);
-    window.addEventListener("scroll", handleScroll, { passive: true });
+// Doctor admin portal pages
+import DoctorNavbar from './doctor/Navbar/Navbar';
+import DoctorDashboard from './doctor/DashboardPage/DashboardPage';
+import DoctorAppointments from './doctor/ListPage/ListPage';
+import DoctorEditProfile from './doctor/EditProfilePage/EditProfilePage';
 
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
-  const scrollTop = () => window.scrollTo({ top: 0, behavior: "smooth" });
-
+// Client layouts wrapping common Header & Footer
+const ClientLayout = () => {
   return (
-    <button
-      onClick={scrollTop}
-      className={`fixed right-4 bottom-6 z-50 w-11 h-11 rounded-full flex items-center justify-center 
-      bg-emerald-600 text-white shadow-lg transition-all duration-300 
-      ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"} 
-      hover:scale-110 hover:shadow-xl`}
-      title="Go to top"
-    >
-      <CircleChevronUp size={22} />
-    </button>
+    <div className="flex flex-col min-h-screen bg-slate-50">
+      <Navbar />
+      <div className="flex-1">
+        <Outlet />
+      </div>
+      <Footer />
+    </div>
   );
 };
 
-  useEffect(() => {
-    document.body.style.overflowX = "hidden";
-    document.documentElement.style.overflowX = "hidden";
-    return () => {
-      document.body.style.overflowX = "auto";
-      document.documentElement.style.overflowX = "auto";
-    };
-  }, []);
+// Doctor layouts wrapping the floating top Navbar
+const DoctorLayout = () => {
+  return (
+    <div className="flex flex-col min-h-screen bg-slate-100">
+      <DoctorNavbar />
+      <div className="flex-1">
+        <Outlet />
+      </div>
+    </div>
+  );
+};
+
+const App = () => {
+  return (
+    <div>
+      <Routes>
+        {/* Client Routes */}
+        <Route element={<ClientLayout />}>
+          <Route path="/" element={<Home />} />
+          <Route path="/doctors" element={<DoctorsPage />} />
+          <Route path="/doctors/:id" element={<DoctorDetail />} />
+          <Route path="/services" element={<ServicePage />} />
+          <Route path="/services/:id" element={<ServiceDetail />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path="/appointments" element={<AppointmentPage />} />
+          <Route path="/appointment/success" element={<CheckoutSuccessPage />} />
+          <Route path="/appointment/cancel" element={<CheckoutCancelPage />} />
+          <Route path="/service-appointment/success" element={<CheckoutSuccessPage />} />
+          <Route path="/service-appointment/cancel" element={<CheckoutCancelPage />} />
+        </Route>
+
+        {/* Doctor Login */}
+        <Route path="/doctor-admin/login" element={<LoginPage />} />
+        <Route path="/login" element={<Navigate to="/doctor-admin/login" replace />} />
+
+        {/* Doctor Admin Portal Routes */}
+        <Route element={<DoctorLayout />}>
+          <Route path="/doctor-admin/:id" element={<DoctorDashboard />} />
+          <Route path="/doctor-admin/:id/appointments" element={<DoctorAppointments />} />
+          <Route path="/doctor-admin/:id/profile/edit" element={<DoctorEditProfile />} />
+        </Route>
+
+        {/* Catch-all redirect */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  );
+};
+
+export default App;

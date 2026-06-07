@@ -1,0 +1,72 @@
+services:
+  # ─────────────────────────────────────────────
+  # 1. MEDICARE BACKEND  (Node.js / Express)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: medicare-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: MONGO_URI
+        sync: false          # set manually in Render dashboard
+      - key: JWT_SECRET
+        sync: false
+      - key: FRONTEND_URL
+        sync: false          # set to your frontend Render URL
+      - key: ADMIN_URL
+        sync: false          # set to your admin Render URL
+      - key: PAYPAL_MODE
+        value: sandbox
+      - key: PAYPAL_CLIENT_ID
+        sync: false
+      - key: PAYPAL_CLIENT_SECRET
+        sync: false
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+
+  # ─────────────────────────────────────────────
+  # 2. MEDICARE FRONTEND  (React / Vite Static)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: medicare-frontend
+    runtime: static
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE
+        sync: false          # set to your backend Render URL e.g. https://medicare-backend.onrender.com
+
+  # ─────────────────────────────────────────────
+  # 3. MEDICARE ADMIN  (React / Vite Static)
+  # ─────────────────────────────────────────────
+  - type: web
+    name: medicare-admin
+    runtime: static
+    rootDir: admin
+    buildCommand: npm install && npm run build
+    staticPublishPath: dist
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: VITE_API_BASE
+        sync: false          # set to your backend Render URL

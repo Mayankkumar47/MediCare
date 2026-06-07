@@ -20,7 +20,8 @@ import {
   AlertCircle,
   BadgeIndianRupee,
 } from "lucide-react";
-import { editProfilePageStyles, iconSize } from "../assets/dummyStyles";
+import { editProfilePageStyles, iconSize } from "../../assets/dummyStyles";
+import API_BASE_ROOT from '../../api.js';
 
 const STORAGE_KEY = "doctorToken_v1";
 
@@ -57,7 +58,7 @@ function dedupeAndSortSchedule(schedule = {}) {
 export default function EditProfilePage({ apiBase }) {
   const { id } = useParams();
   const navigate = useNavigate();
-  const API_BASE = "http://localhost:4000/api/doctors";
+  const API_BASE = API_BASE_ROOT + '/api/doctors';
 
   const [doc, setDoc] = useState(null);
   const [editing, setEditing] = useState(false);

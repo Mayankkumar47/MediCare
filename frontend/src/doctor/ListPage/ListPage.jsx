@@ -1,3 +1,10 @@
+import React, { useState, useEffect, useMemo } from 'react';
+import { useParams, useLocation, Link } from 'react-router-dom';
+import { Calendar, Clock, Phone, Search, X, User } from 'lucide-react';
+import { listPageStyles } from '../../assets/dummyStyles';
+
+const API_BASE = "http://localhost:4000";
+
 function parseDateTime(date, time) {
   return new Date(`${date}T${time}:00`);
 }
@@ -293,6 +300,7 @@ function RescheduleButton({ appointment, onReschedule }) {
   );
 }
 
+const ListPage = () => {
   const [appointments, setAppointments] = useState([]);
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
@@ -337,7 +345,7 @@ function RescheduleButton({ appointment, onReschedule }) {
 
   useEffect(() => {
     fetchAppointments();
-  }, []);
+  }, [doctorId]);
 
   async function updateStatusRemote(id, newStatus) {
     const appt = appointments.find((p) => p.id === id);
@@ -454,27 +462,133 @@ function RescheduleButton({ appointment, onReschedule }) {
       );
   }, [appointments, search, statusFilter]);
 
+  return (
+    <div className={listPageStyles.pageContainer}>
+      <div className={listPageStyles.contentWrapper}>
+        {/* Header */}
+        <div className={listPageStyles.headerContainer}>
+          <div>
+            <h1 className={listPageStyles.headerTitle}>Patient Appointments</h1>
+            <p className={listPageStyles.headerSubtitle}>
+              View, confirm, reschedule, or cancel bookings.
+            </p>
+          </div>
+
+          {/* Search and filter */}
+          <div className={listPageStyles.searchFilterContainer}>
+            <div className={listPageStyles.searchContainer}>
+              <span className={listPageStyles.searchIconContainer}>
+                <Search className={listPageStyles.searchIcon} />
+              </span>
+              <input
+                type="text"
+                placeholder="Search patient..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className={listPageStyles.searchInput}
+              />
+              {search && (
+                <button onClick={() => setSearch("")} className={listPageStyles.clearSearchButton}>
+                  <X className={listPageStyles.clearSearchIcon} />
+                </button>
+              )}
+            </div>
+
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
               className={listPageStyles.statusFilter}
               title="Filter by status"
             >
-              <option value="">All</option>
+              <option value="">All Statuses</option>
+              <option value="pending">Pending</option>
+              <option value="confirmed">Confirmed</option>
+              <option value="rescheduled">Rescheduled</option>
               <option value="complete">Completed</option>
               <option value="cancelled">Cancelled</option>
-              <option value="rescheduled">Rescheduled</option>
             </select>
+          </div>
+        </div>
 
-
-    <div className={listPageStyles.dateTimeSection}>
-                  <div className={listPageStyles.dateTimeContainer}>
-                    <Calendar className={listPageStyles.calendarIcon} />
-                    <span className={listPageStyles.dateText}>
-                      {formatDate(a.date)}
-                    </span>
-                    <span className=" sm:inline">:</span>
-                    <span>{formatTimeAMPM(a.time)}</span>
+        {/* Loading / Error / Grid */}
+        {loading ? (
+          <div className={listPageStyles.loadingContainer}>Loading appointments list...</div>
+        ) : error ? (
+          <div className={listPageStyles.errorContainer}>
+            <p>Error: {error}</p>
+            <button onClick={fetchAppointments} className="mt-2 px-4 py-2 bg-emerald-600 text-white rounded-full">
+              Retry
+            </button>
+          </div>
+        ) : (
+          <>
+            <div className={listPageStyles.appointmentsGrid}>
+              {filtered.map((a) => (
+                <div key={a.id} className={listPageStyles.appointmentCard}>
+                  {/* Card Header */}
+                  <div className={listPageStyles.cardHeader}>
+                    <div className={listPageStyles.cardAvatar}>
+                      {a.doctorImage ? (
+                        <img src={a.doctorImage} alt={a.patient} className={listPageStyles.cardAvatarImage} />
+                      ) : (
+                        <div className={listPageStyles.cardAvatarFallback}>
+                          {a.patient.slice(0, 2).toUpperCase()}
+                        </div>
+                      )}
+                    </div>
+                    <div className={listPageStyles.cardContent}>
+                      <h3 className={listPageStyles.cardPatientName}>{a.patient}</h3>
+                      <p className={listPageStyles.cardPatientInfo}>
+                        {a.age ? `${a.age} Yrs` : ""} {a.gender ? `• ${a.gender}` : ""}
+                      </p>
+                    </div>
                   </div>
-                  <div className={listPageStyles.feeText}>₹{a.fee}</div>
+
+                  {/* Date/Time Section */}
+                  <div className={listPageStyles.dateTimeSection}>
+                    <div className={listPageStyles.dateTimeContainer}>
+                      <Calendar className={listPageStyles.calendarIcon} />
+                      <span className={listPageStyles.dateText}>
+                        {formatDate(a.date)}
+                      </span>
+                      <span>:</span>
+                      <span>{formatTimeAMPM(a.time)}</span>
+                    </div>
+                    <div className={listPageStyles.feeText}>Fees: ₹{a.fee}</div>
+                  </div>
+
+                  {/* Contact and Status Section */}
+                  <div className={listPageStyles.contactStatusSection}>
+                    {a.mobile && (
+                      <div className={listPageStyles.phoneContainer}>
+                        <Phone className={listPageStyles.phoneIcon} />
+                        <span className={listPageStyles.phoneNumber}>{a.mobile}</span>
+                      </div>
+                    )}
+
+                    <div className={listPageStyles.statusContainer}>
+                      <StatusBadge status={a.status} />
+                      <StatusSelect appointment={a} onChange={(ns) => updateStatus(a.id, ns)} />
+                    </div>
+                  </div>
+
+                  {/* Reschedule option */}
+                  <div className={listPageStyles.rescheduleContainer}>
+                    <RescheduleButton appointment={a} onReschedule={(d, t) => updateDateTime(a.id, d, t)} />
+                  </div>
                 </div>
+              ))}
+            </div>
+
+            {filtered.length === 0 && (
+              <div className={listPageStyles.loadingContainer}>No appointments match your filters.</div>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default ListPage;
+export { StatusBadge, StatusSelect };

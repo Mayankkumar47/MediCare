@@ -10,7 +10,7 @@ import {
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "@clerk/clerk-react";
 import toast, { Toaster } from "react-hot-toast";
-import { serviceDetailStyles, iconSize } from "../assets/dummyStyles";
+import { serviceDetailStyles, iconSize } from "../../assets/dummyStyles";
 
 const DEFAULT_HOST = "http://localhost:4000".replace(/\/$/, "");
 
@@ -274,15 +274,10 @@ export default function ServiceDetail() {
       return;
     }
 
-    if (!isSignedIn) {
-      toast.error("Please sign in to create a booking.");
-      return;
-    }
-
     setSubmitting(true);
     try {
       // get Clerk token (frontend)
-      const token = await getToken().catch(() => null);
+      const token = isSignedIn ? await getToken().catch(() => null) : "mock_user_guest";
 
       // payload (replace the existing payload in ServiceDetail.jsx)
       const payload = {
@@ -315,6 +310,7 @@ export default function ServiceDetail() {
         fees: service?.price ?? 0,
         paymentMethod: paymentMethod === "Cash" ? "Cash" : "Online",
         email: email || undefined,
+        createdBy: userId || "guest_user",
         meta: {
           client: "frontend",
           serviceName: service?.name,

@@ -1,6 +1,13 @@
+import React, { useState, useEffect, useMemo } from "react";
+import { Calendar, Clock, Phone, BadgeIndianRupee, User, CheckCircle, XCircle, Search, Loader2 } from "lucide-react";
+import { serviceAppointmentsStyles } from "../../assets/dummyStyles";
+
+import API_BASE from '../../api.js';
+
 function formatTwo(n) {
   return String(n).padStart(2, "0");
 }
+
 function formatDateNice(dateStr) {
   if (!dateStr) return "";
   const d = new Date(`${dateStr}T00:00:00`);
@@ -62,10 +69,7 @@ function Toast({ toasts, removeToast }) {
   return (
     <div className={serviceAppointmentsStyles.toastContainer}>
       {toasts.map((t) => (
-        <div
-          key={t.id}
-          className={serviceAppointmentsStyles.toast}
-        >
+        <div key={t.id} className={serviceAppointmentsStyles.toast}>
           <div className={serviceAppointmentsStyles.toastContent}>
             <div className="mt-0.5">
               <Loader2 className={serviceAppointmentsStyles.toastSpinner} />
@@ -123,6 +127,7 @@ function getTodayISO() {
   const day = String(d.getDate()).padStart(2, "0");
   return `${y}-${m}-${day}`;
 }
+
 function isDateBefore(aDateStr, bDateStr) {
   try {
     const a = new Date(`${aDateStr}T00:00:00`);
@@ -568,118 +573,192 @@ export default function ServiceAppointmentsPage() {
       return 0;
     }
   }
+  
   const displayList = useMemo(() => {
     const copy = filtered.slice();
     copy.sort((x, y) => getTimestamp(y) - getTimestamp(x));
     return copy;
   }, [filtered]);
 
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className={serviceAppointmentsStyles.statusFilterSelect}
-              title="Filter by status"
-            >
-              <option value="">All</option>
-              <option value="Pending">Pending</option>
-              <option value="Confirmed">Confirmed</option>
-              <option value="Rescheduled">Rescheduled</option>
-              <option value="Completed">Completed</option>
-              <option value="Canceled">Canceled</option>
-            </select>
+  return (
+    <div className={serviceAppointmentsStyles.container}>
+      {/* Toast Notification */}
+      <Toast toasts={toasts} removeToast={removeToast} />
 
- <div className={serviceAppointmentsStyles.cardInner}>
-                    <div>
-                      <div className={serviceAppointmentsStyles.cardHeader}>
-                        <div className={serviceAppointmentsStyles.patientInfoContainer}>
-                          <div className={serviceAppointmentsStyles.patientAvatar}>
-                            <User className={serviceAppointmentsStyles.patientAvatarIcon} />
-                          </div>
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className={serviceAppointmentsStyles.headerContainer}>
+          <div className={serviceAppointmentsStyles.headerTitleContainer}>
+            <h1 className={serviceAppointmentsStyles.headerTitle}>Service Bookings</h1>
+            <p className={serviceAppointmentsStyles.headerSubtitle}>
+              Manage scheduled diagnostic services, checkups, and tests.
+            </p>
+          </div>
 
-                          <div>
-                            <div className={serviceAppointmentsStyles.patientName}>
-                              {a.patientName}
-                            </div>
-                            <div className={serviceAppointmentsStyles.patientDetails}>
-                              {a.gender} • {a.age} yrs
-                            </div>
-                          </div>
+          <div className={serviceAppointmentsStyles.searchContainer}>
+            <div className={serviceAppointmentsStyles.searchInputWrapper}>
+              <div className={serviceAppointmentsStyles.searchLabel}>
+                <span className={serviceAppointmentsStyles.searchIconContainer}>
+                  <Search className={serviceAppointmentsStyles.searchIcon} />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search by patient, service name..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className={serviceAppointmentsStyles.searchInput}
+                />
+              </div>
+
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className={serviceAppointmentsStyles.statusFilterSelect}
+                title="Filter by status"
+              >
+                <option value="">All Statuses</option>
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Rescheduled">Rescheduled</option>
+                <option value="Completed">Completed</option>
+                <option value="Canceled">Canceled</option>
+              </select>
+            </div>
+            
+            <div className={serviceAppointmentsStyles.searchInfo}>
+              <span>Found {displayList.length} service bookings</span>
+              <button onClick={fetchAppointments} className={serviceAppointmentsStyles.refreshButton}>
+                Refresh List
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Loading / Error / Empty States */}
+        {loading && (
+          <div className={serviceAppointmentsStyles.loadingContainer}>
+            <Loader2 className="w-6 h-6 animate-spin text-emerald-600" />
+            <span className="text-sm text-gray-500">Loading service appointments...</span>
+          </div>
+        )}
+
+        {error && (
+          <div className={serviceAppointmentsStyles.errorContainer}>
+            <p className="text-sm font-semibold">Failed to load: {error}</p>
+          </div>
+        )}
+
+        {!loading && !error && displayList.length === 0 && (
+          <div className={serviceAppointmentsStyles.noResultsContainer}>
+            <span className={serviceAppointmentsStyles.noResultsIcon}>📅</span>
+            <span className={serviceAppointmentsStyles.noResultsText}>No Service Bookings Found</span>
+            <span className={serviceAppointmentsStyles.noResultsSubtext}>Try adjusting your search criteria or filters.</span>
+          </div>
+        )}
+
+        {/* Grid Container */}
+        <div className={serviceAppointmentsStyles.gridContainer}>
+          {displayList.map((a) => {
+            const isLocked = a.status === "Completed" || a.status === "Canceled";
+
+            return (
+              <div key={a.id} className={serviceAppointmentsStyles.article}>
+                <div className={serviceAppointmentsStyles.cardInner}>
+                  <div>
+                    <div className={serviceAppointmentsStyles.cardHeader}>
+                      <div className={serviceAppointmentsStyles.patientInfoContainer}>
+                        <div className={serviceAppointmentsStyles.patientAvatar}>
+                          <User className={serviceAppointmentsStyles.patientAvatarIcon} />
                         </div>
 
-                        <div className={serviceAppointmentsStyles.statusContainer}>
-                          <StatusBadge status={a.status} />
-                          <div className="mt-1">
-                            <StatusSelect
-                              appointment={a}
-                              onChange={(s) => changeStatusRemote(a.id, s)}
-                              disabled={false}
-                            />
+                        <div>
+                          <div className={serviceAppointmentsStyles.patientName}>
+                            {a.patientName}
+                          </div>
+                          <div className={serviceAppointmentsStyles.patientDetails}>
+                            {a.gender} • {a.age} yrs
                           </div>
                         </div>
                       </div>
 
-                      <div className={serviceAppointmentsStyles.detailsContainer}>
-                        <div className={serviceAppointmentsStyles.detailItem}>
-                          <Phone className={serviceAppointmentsStyles.detailIcon} />
-                          <span className={serviceAppointmentsStyles.detailText}>
-                            {a.mobile}
-                          </span>
-                        </div>
-
-                        <div className={serviceAppointmentsStyles.detailItem}>
-                          <BadgeIndianRupee className={serviceAppointmentsStyles.detailIcon} />
-                          <span className={serviceAppointmentsStyles.feesText}>
-                            Fees: ₹{a.fees}
-                          </span>
-                        </div>
-
-                        <div className={serviceAppointmentsStyles.detailItem}>
-                          <Calendar className={serviceAppointmentsStyles.detailIcon} />
-                          <span className={serviceAppointmentsStyles.detailText}>
-                            Date: {formatDateNice(a.date)}
-                          </span>
-                        </div>
-
-                        <div className={serviceAppointmentsStyles.detailItem}>
-                          <Clock className={serviceAppointmentsStyles.detailIcon} />
-                          <span className={serviceAppointmentsStyles.detailText}>
-                            Time: {formatTimeDisplay(a)}
-                          </span>
-                        </div>
-
-                        <div className={serviceAppointmentsStyles.serviceText}>
-                          Service:{" "}
-                          <span className={serviceAppointmentsStyles.serviceName}>
-                            {a.serviceName}
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className={serviceAppointmentsStyles.actionsContainer}>
-                      <div className={serviceAppointmentsStyles.actionsInnerContainer}>
-                        <div className="flex-1">
-                          <RescheduleButton
+                      <div className={serviceAppointmentsStyles.statusContainer}>
+                        <StatusBadge status={a.status} />
+                        <div className="mt-1">
+                          <StatusSelect
                             appointment={a}
-                            onReschedule={(d, t) =>
-                              rescheduleRemote(a.id, d, t)
-                            }
+                            onChange={(s) => changeStatusRemote(a.id, s)}
                             disabled={false}
                           />
                         </div>
+                      </div>
+                    </div>
 
-                        <div className="ml-3">
-                          <button
-                            onClick={() => cancelRemote(a.id)}
-                            disabled={isLocked}
-                            className={serviceAppointmentsStyles.cancelButton(isLocked)}
-                            title={
-                              isLocked ? "Cannot cancel" : "Cancel appointment"
-                            }
-                          >
-                            Cancel
-                          </button>
-                        </div>
+                    <div className={serviceAppointmentsStyles.detailsContainer}>
+                      <div className={serviceAppointmentsStyles.detailItem}>
+                        <Phone className={serviceAppointmentsStyles.detailIcon} />
+                        <span className={serviceAppointmentsStyles.detailText}>
+                          {a.mobile}
+                        </span>
+                      </div>
+
+                      <div className={serviceAppointmentsStyles.detailItem}>
+                        <BadgeIndianRupee className={serviceAppointmentsStyles.detailIcon} />
+                        <span className={serviceAppointmentsStyles.feesText}>
+                          Fees: ₹{a.fees}
+                        </span>
+                      </div>
+
+                      <div className={serviceAppointmentsStyles.detailItem}>
+                        <Calendar className={serviceAppointmentsStyles.detailIcon} />
+                        <span className={serviceAppointmentsStyles.detailText}>
+                          Date: {formatDateNice(a.date)}
+                        </span>
+                      </div>
+
+                      <div className={serviceAppointmentsStyles.detailItem}>
+                        <Clock className={serviceAppointmentsStyles.detailIcon} />
+                        <span className={serviceAppointmentsStyles.detailText}>
+                          Time: {formatTimeDisplay(a)}
+                        </span>
+                      </div>
+
+                      <div className={serviceAppointmentsStyles.serviceText}>
+                        Service:{" "}
+                        <span className={serviceAppointmentsStyles.serviceName}>
+                          {a.serviceName}
+                        </span>
                       </div>
                     </div>
                   </div>
+
+                  <div className={serviceAppointmentsStyles.actionsContainer}>
+                    <div className={serviceAppointmentsStyles.actionsInnerContainer}>
+                      <div className="flex-1">
+                        <RescheduleButton
+                          appointment={a}
+                          onReschedule={(d, t) => rescheduleRemote(a.id, d, t)}
+                          disabled={false}
+                        />
+                      </div>
+
+                      <div className="ml-3">
+                        <button
+                          onClick={() => cancelRemote(a.id)}
+                          disabled={isLocked}
+                          className={serviceAppointmentsStyles.cancelButton(isLocked)}
+                          title={isLocked ? "Cannot cancel" : "Cancel appointment"}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -1,8 +1,11 @@
+import mongoose from "mongoose";
+
+const appointmentSchema = new mongoose.Schema(
+  {
     patientName: { type: String, required: true, trim: true },
     mobile: { type: String, required: true, trim: true },
     age: { type: Number, default: null },
     gender: { type: String, default: "" },
-
     doctorId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Doctor",
@@ -11,28 +14,22 @@
     },
     doctorName: { type: String, default: "" },
     speciality: { type: String, default: "" },
-
     doctorImage: {
       url: { type: String, default: "" },
       publicId: { type: String, default: "" },
     },
-
     date: { type: String, required: true },
     time: { type: String, required: true },
-
     fees: { type: Number, required: true, min: 0, default: 0 },
-
     status: {
       type: String,
       enum: ["Pending", "Confirmed", "Completed", "Canceled", "Rescheduled"],
       default: "Pending",
     },
-
     rescheduledTo: {
       date: { type: String },
       time: { type: String },
     },
-
     payment: {
       method: {
         type: String,
@@ -49,4 +46,11 @@
       meta: { type: mongoose.Schema.Types.Mixed, default: {} },
     },
     sessionId: { type: String, default: null, index: true },
-    paidAt: { type: Date, default: null }, 
+    paidAt: { type: Date, default: null },
+    createdBy: { type: String, required: true, index: true }, // Clerk user ID
+  },
+  { timestamps: true }
+);
+
+const Appointment = mongoose.models.Appointment || mongoose.model("Appointment", appointmentSchema);
+export default Appointment;
