@@ -125,24 +125,12 @@ const Home = () => {
 
       {/* Services Showcase Preview */}
       <div className="py-8 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-4 flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-serif font-bold text-emerald-900">Lab Tests & Services</h2>
-          <Link to="/services" className="text-emerald-600 hover:text-emerald-800 font-semibold flex items-center gap-1 text-sm">
-            View All Services &rarr;
-          </Link>
-        </div>
-        <ServicePage previewCount={4} />
+        <ServicePage previewCount={4} showHeader={true} title="Lab Tests & Services" />
       </div>
 
       {/* Top Doctors Showcase Preview */}
       <div className="py-8 bg-white">
-        <div className="max-w-7xl mx-auto px-4 flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-serif font-bold text-emerald-900">Featured Specialists</h2>
-          <Link to="/doctors" className="text-emerald-600 hover:text-emerald-800 font-semibold flex items-center gap-1 text-sm">
-            Find All Doctors &rarr;
-          </Link>
-        </div>
-        <HomeDoctors previewCount={4} />
+        <HomeDoctors previewCount={4} showHeader={true} title="Meet Our Top Doctors" />
       </div>
 
       {/* Testimonials */}

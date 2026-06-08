@@ -5,7 +5,7 @@ import { homeDoctorsStyles } from '../../assets/dummyStyles';
 
 import API_BASE from '../../api.js';
 
-const HomeDoctors = ({ previewCount = 4 }) => {
+const HomeDoctors = ({ previewCount = 4, showHeader = true, title, subtitle }) => {
   const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -72,14 +72,20 @@ const HomeDoctors = ({ previewCount = 4 }) => {
     <section className={homeDoctorsStyles.section}>
       <div className={homeDoctorsStyles.container}>
         {/* Header */}
-        <div className={homeDoctorsStyles.header}>
-          <h2 className={homeDoctorsStyles.title}>
-            Meet Our <span className={homeDoctorsStyles.titleSpan}>Top Doctors</span>
-          </h2>
-          <p className={homeDoctorsStyles.subtitle}>
-            Book appointments with our top-rated specialists and highly experienced medical practitioners.
-          </p>
-        </div>
+        {showHeader && (
+          <div className={homeDoctorsStyles.header}>
+            <h2 className={homeDoctorsStyles.title}>
+              {title ? (
+                title
+              ) : (
+                <>Meet Our <span className={homeDoctorsStyles.titleSpan}>Top Doctors</span></>
+              )}
+            </h2>
+            <p className={homeDoctorsStyles.subtitle}>
+              {subtitle || "Book appointments with our top-rated specialists and highly experienced medical practitioners."}
+            </p>
+          </div>
+        )}
 
         {/* Error banner - subtle, non-blocking */}
         {error && !loading && doctors.length === 0 && (
@@ -187,6 +193,17 @@ const HomeDoctors = ({ previewCount = 4 }) => {
                 </div>
               </article>
             ))}
+          </div>
+        )}
+
+        {previewCount && doctors.length > previewCount && (
+          <div className="flex justify-center mt-10">
+            <Link
+              to="/doctors"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold shadow-md transition-all duration-300 hover:shadow-lg"
+            >
+              Find All Doctors &rarr;
+            </Link>
           </div>
         )}
       </div>

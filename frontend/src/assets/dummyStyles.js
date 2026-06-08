@@ -182,8 +182,8 @@ export const certificationStyles = {
   // Heading styles
   headingContainer: "text-center mb-12",
   headingInner: "relative inline-block",
-  leftLine: "absolute -left-20 top-1/2 w-16 h-0.5 bg-linear-to-br from-transparent to-green-400",
-  rightLine: "absolute -right-20 top-1/2 w-16 h-0.5 bg-linear-to-br from-transparent to-teal-400",
+  leftLine: "hidden md:block absolute -left-20 top-1/2 w-16 h-0.5 bg-linear-to-br from-transparent to-green-400",
+  rightLine: "hidden md:block absolute -right-20 top-1/2 w-16 h-0.5 bg-linear-to-br from-transparent to-teal-400",
   title: "text-2xl sm:text-3xl lg:text-5xl font-serif text-gray-900 mb-4 tracking-tight",
   titleText: "bg-linear-to-br from-green-600 via-teal-600 to-emerald-600 bg-clip-text text-transparent",
   subtitle: "text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed",
@@ -501,25 +501,25 @@ export const homeDoctorsStyles = {
   doctorsGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8",
   
   // Doctor card
-  article: "group relative bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform duration-300 overflow-hidden",
+  article: "group relative bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform duration-300 overflow-hidden flex flex-col h-full",
   
   // Image containers
-  imageContainerAvailable: "relative h-44 sm:h-44 md:h-48 lg:h-52 overflow-hidden rounded-t-3xl",
-  imageContainerUnavailable: "relative h-44 sm:h-44 md:h-48 lg:h-52 overflow-hidden rounded-t-3xl opacity-80 cursor-not-allowed",
-  image: "w-full h-full object-cover object-center transform transition-transform duration-500",
-  unavailableBadge: "absolute top-3 left-3 bg-rose-50 text-rose-700 text-xs px-2 py-1 rounded-full shadow",
+  imageContainerAvailable: "relative h-40 sm:h-44 md:h-48 lg:h-52 overflow-hidden bg-slate-50",
+  imageContainerUnavailable: "relative h-40 sm:h-44 md:h-48 lg:h-52 overflow-hidden bg-slate-50 opacity-85",
+  image: "w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500",
+  unavailableBadge: "absolute top-3 left-3 bg-rose-50 text-rose-700 text-xs px-2 py-1 rounded-full shadow z-10",
   
   // Card body
-  cardBody: "p-3 sm:p-4 md:p-5 font-serif",
-  doctorName: "text-xs sm:text-sm font-bold text-emerald-900 truncate",
-  specialization: "text-xs sm:text-sm text-emerald-600 font-medium mt-1 truncate",
+  cardBody: "p-3 sm:p-4 md:p-5 font-serif flex flex-col flex-1 justify-between",
+  doctorName: "text-sm sm:text-base font-bold text-emerald-900 truncate mb-0.5",
+  specialization: "text-xs sm:text-sm text-emerald-600 font-medium truncate mb-2",
   
   // Experience badge
-  experienceContainer: "mt-3 flex items-center justify-between text-sm text-gray-600",
-  experienceBadge: "flex items-center gap-2 border border-green-300 bg-green-100 px-2 py-1 rounded-full text-xs sm:text-sm",
+  experienceContainer: "mt-auto flex items-center justify-between text-xs sm:text-sm text-gray-600 mb-3",
+  experienceBadge: "flex items-center gap-1.5 border border-green-200 bg-green-50 px-2 py-0.5 rounded-full text-xs font-semibold text-emerald-800",
   
   // Buttons
-  buttonContainer: "mt-3",
+  buttonContainer: "mt-auto",
   buttonAvailable: "w-full inline-flex items-center justify-center gap-2 py-2.5 sm:py-3 rounded-full font-medium transition-all duration-300 text-sm bg-linear-to-br from-emerald-300 to-teal-500 text-white hover:shadow-lg",
   buttonUnavailable: "w-full inline-flex items-center justify-center gap-2 py-2.5 sm:py-3 rounded-full font-medium bg-gray-300 text-gray-600 cursor-not-allowed text-sm",
   
@@ -790,24 +790,24 @@ export const servicePageStyles = {
 
 export const serviceCardStyles = {
   // Card container
-  card: "group rounded-2xl overflow-hidden bg-white shadow-xl hover:-translate-y-2 transition-transform duration-500 border border-emerald-100",
+  card: "group rounded-2xl overflow-hidden bg-white shadow-xl hover:-translate-y-2 transition-transform duration-500 border border-emerald-100 flex flex-col h-full",
   
   // Image container
-  imageContainer: "w-full overflow-hidden bg-emerald-50/30 flex items-center justify-center",
+  imageContainer: "w-full overflow-hidden bg-emerald-50/30 flex items-center justify-center h-40 sm:h-48 md:h-56 lg:h-60",
   
   // Images
-  picture: "w-full",
-  responsiveImage: "w-full h-40 sm:h-48 md:h-56 lg:h-60 object-cover object-center transform group-hover:scale-105 transition-transform duration-500",
-  fallbackImage: "w-full h-60 sm:h-48 md:h-56 lg:h-60 object-cover object-center transform transition-transform duration-500",
+  picture: "w-full h-full",
+  responsiveImage: "w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500",
+  fallbackImage: "w-full h-full object-cover object-center transform transition-transform duration-500",
   
   // Content
-  content: "p-3 sm:p-4 md:p-5 text-center",
-  serviceName: "text-sm sm:text-base font-semibold font-serif text-emerald-900",
+  content: "p-4 sm:p-5 flex flex-col flex-1 justify-between text-center",
+  serviceName: "text-sm sm:text-base md:text-lg font-semibold font-serif text-emerald-900 mb-3 line-clamp-2 min-h-[3.5rem] flex items-center justify-center",
   
   // Buttons
-  buttonContainer: "mt-4",
-  buttonAvailable: "inline-flex items-center justify-center gap-2 px-5 py-2 w-full rounded-full bg-emerald-500 text-white font-medium",
-  buttonUnavailable: "px-5 py-2 w-full flex items-center justify-center gap-2 rounded-full bg-gray-200 text-gray-500 cursor-not-allowed border",
+  buttonContainer: "mt-auto",
+  buttonAvailable: "inline-flex items-center justify-center gap-2 px-5 py-2.5 w-full rounded-full bg-emerald-500 hover:bg-emerald-600 text-white font-medium transition-colors duration-300",
+  buttonUnavailable: "px-5 py-2.5 w-full flex items-center justify-center gap-2 rounded-full bg-gray-200 text-gray-500 cursor-not-allowed border",
 };
 
 

@@ -105,7 +105,7 @@ const ServiceCard = ({ service }) => {
   );
 };
 
-const ServicePage = ({ previewCount }) => {
+const ServicePage = ({ previewCount, showHeader = true, title, subtitle }) => {
   const [services, setServices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -176,12 +176,14 @@ const ServicePage = ({ previewCount }) => {
     <div className={servicePageStyles.pageContainer}>
       <div className={servicePageStyles.maxWidthContainer}>
         {/* Header */}
-        <div className={servicePageStyles.header}>
-          <h1 className={servicePageStyles.title}>Medical Checkups & Labs</h1>
-          <p className={servicePageStyles.subtitle}>
-            Explore our specialized diagnostic services and preventative care checkup packages.
-          </p>
-        </div>
+        {showHeader && (
+          <div className={servicePageStyles.header}>
+            <h1 className={servicePageStyles.title}>{title || "Medical Checkups & Labs"}</h1>
+            <p className={servicePageStyles.subtitle}>
+              {subtitle || "Explore our specialized diagnostic services and preventative care checkup packages."}
+            </p>
+          </div>
+        )}
 
         {/* Loading / Error / Results */}
         {loading ? (
@@ -221,6 +223,17 @@ const ServicePage = ({ previewCount }) => {
                 <ServiceCard key={service.id} service={service} />
               ))}
             </div>
+
+            {previewCount && services.length > previewCount && (
+              <div className="flex justify-center mt-8">
+                <Link
+                  to="/services"
+                  className="inline-flex items-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-full font-semibold shadow-md transition-all duration-300 hover:shadow-lg"
+                >
+                  View All Services &rarr;
+                </Link>
+              </div>
+            )}
 
             {shown.length === 0 && (
               <div className={servicePageStyles.emptyState}>
