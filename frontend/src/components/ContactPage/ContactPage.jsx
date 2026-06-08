@@ -274,7 +274,7 @@ const ContactPage = () => {
             </div>
             <div className={contactPageStyles.infoItem}>
               <Mail className="text-emerald-600 w-5 h-5" />
-              <span>info@hexagon.digital</span>
+              <span>support@medicare.health</span>
             </div>
           </div>
 

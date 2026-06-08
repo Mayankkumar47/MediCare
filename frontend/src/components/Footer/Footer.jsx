@@ -36,31 +36,31 @@ const socialLinks = [
     Icon: Facebook,
     color: footerStyles.facebookColor,
     name: "Facebook",
-    href: "https://www.facebook.com/people/Hexagon-Digital-Services/61567156598660/",
+    href: "https://facebook.com",
   },
   {
     Icon: Twitter,
     color: footerStyles.twitterColor,
     name: "Twitter",
-    href: "https://www.linkedin.com/company/hexagondigtial-services/",
+    href: "https://twitter.com",
   },
   {
     Icon: Instagram,
     color: footerStyles.instagramColor,
     name: "Instagram",
-    href: "http://instagram.com/hexagondigitalservices?igsh=MWp2NG1oNTlibWVnZA%3D%3D",
+    href: "https://instagram.com",
   },
   {
     Icon: Linkedin,
     color: footerStyles.linkedinColor,
     name: "LinkedIn",
-    href: "https://www.linkedin.com/company/hexagondigtial-services/",
+    href: "https://linkedin.com",
   },
   {
     Icon: Youtube,
     color: footerStyles.youtubeColor,
     name: "YouTube",
-    href: "https://youtube.com/@hexagondigitalservices?si=lxEFYNCP42t6AoDJ",
+    href: "https://youtube.com",
   },
 ];
 
@@ -110,7 +110,7 @@ const Footer = () => {
                 <div className={footerStyles.contactIconWrapper}>
                   <Mail className={footerStyles.contactIcon} />
                 </div>
-                <span className={footerStyles.contactText}>info@hexagon.digital</span>
+                <span className={footerStyles.contactText}>support@medicare.health</span>
               </div>
             </div>
           </div>
@@ -207,15 +207,8 @@ const Footer = () => {
             &copy; {new Date().getFullYear()} MediCare. All rights reserved.
           </p>
           <p className={footerStyles.designerText}>
-            Designed with ♥ by{' '}
-            <a 
-              href="https://hexagondigitalservices.com" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className={footerStyles.designerLink}
-            >
-              Hexagon Digital Services
-            </a>
+            Built with ♥ by the{' '}
+            <span className={footerStyles.designerLink}>MediCare Team</span>
           </p>
         </div>
       </div>
