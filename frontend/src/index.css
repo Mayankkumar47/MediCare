@@ -1,1 +1,96 @@
 @import "tailwindcss";
+
+/* ── Global responsive base ── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  min-width: 320px;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Responsive typography scale ── */
+@media (max-width: 480px) {
+  h1 { font-size: clamp(1.5rem, 6vw, 2.5rem) !important; }
+  h2 { font-size: clamp(1.2rem, 5vw, 2rem) !important; }
+  h3 { font-size: clamp(1rem, 4vw, 1.5rem) !important; }
+}
+
+/* ── Prevent horizontal scroll ── */
+.overflow-x-hidden { overflow-x: hidden; }
+
+/* ── Mobile nav utility ── */
+@media (max-width: 767px) {
+  .mobile-hidden { display: none !important; }
+  .mobile-full { width: 100% !important; }
+  .mobile-stack { flex-direction: column !important; }
+  .mobile-text-sm { font-size: 0.875rem !important; }
+  .mobile-px-3 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; }
+}
+
+/* ── Touch tap targets ── */
+button, a, [role="button"] {
+  min-height: 36px;
+}
+
+/* ── Card grid responsive ── */
+@media (max-width: 640px) {
+  .responsive-grid-2 {
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ── Form inputs on mobile ── */
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px !important; /* prevents iOS zoom on focus */
+  }
+}
+
+/* ── Booking form calendar grid ── */
+@media (max-width: 480px) {
+  .calendar-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    gap: 4px !important;
+  }
+  .slot-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+/* ── PayPal / Stripe button ── */
+@media (max-width: 480px) {
+  .payment-btn { width: 100% !important; }
+}
+
+/* ── Testimonial card on mobile ── */
+@media (max-width: 640px) {
+  .testimonial-card {
+    padding: 1rem !important;
+    margin: 0 0.25rem !important;
+  }
+}
+
+/* ── Doctor detail page ── */
+@media (max-width: 768px) {
+  .doctor-detail-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* ── Smooth transitions ── */
+.transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); }
+
+/* ── No scroll when mobile menu open ── */
+body.menu-open { overflow: hidden; }

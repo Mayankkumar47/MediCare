@@ -2,12 +2,12 @@
 
 export const appointmentPageStyles = {
   // Main container styles
-  pageContainer: "min-h-screen font-serif bg-linear-to-br from-green-50 to-emerald-100 py-10 px-4",
+  pageContainer: "min-h-screen font-serif bg-linear-to-br from-green-50 to-emerald-100 py-6 sm:py-10 px-3 sm:px-4 md:px-6",
   maxWidthContainer: "max-w-6xl mx-auto",
   
   // Title styles
-  doctorTitle: "text-3xl font-bold text-emerald-700 text-center mb-6",
-  serviceTitle: "text-3xl font-bold text-blue-700 text-center mb-6",
+  doctorTitle: "text-xl sm:text-2xl md:text-3xl font-bold text-emerald-700 text-center mb-4 sm:mb-6",
+  serviceTitle: "text-xl sm:text-2xl md:text-3xl font-bold text-blue-700 text-center mb-4 sm:mb-6",
   
   // Loading and empty states
   loadingText: "text-center text-emerald-600 py-4",
@@ -16,27 +16,27 @@ export const appointmentPageStyles = {
   serviceEmptyStateText: "text-center text-blue-600 py-4",
   
   // Grid layouts
-  doctorGrid: "grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12",
-  serviceGrid: "grid grid-cols-1 md:grid-cols-3 sm:grid-cols-2 lg:grid-cols-4 gap-10",
+  doctorGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 mb-8 sm:mb-12",
+  serviceGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5",
 };
 
 export const cardStyles = {
   // Doctor appointment card
-  doctorCard: "bg-white border border-emerald-200 rounded-2xl p-6 shadow-md hover:shadow-emerald-400 transform hover:-translate-y-2 transition-all duration-300 flex flex-col items-center",
-  serviceCard: "bg-white border border-blue-200 rounded-2xl p-6 shadow-md",
+  doctorCard: "bg-white border border-emerald-200 rounded-2xl p-3 sm:p-5 md:p-6 shadow-md hover:shadow-emerald-400 transform hover:-translate-y-2 transition-all duration-300 flex flex-col items-center",
+  serviceCard: "bg-white border border-blue-200 rounded-2xl p-3 sm:p-5 md:p-6 shadow-md",
   
   // Image containers
-  doctorImageContainer: "w-28 h-28 rounded-full border-4 border-emerald-300 shadow-md bg-emerald-50 flex items-center justify-center overflow-hidden",
-  serviceImageContainer: "w-28 h-28 rounded-full border-4 border-blue-300 mx-auto bg-blue-50 flex items-center justify-center overflow-hidden",
+  doctorImageContainer: "w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-emerald-300 shadow-md bg-emerald-50 flex items-center justify-center overflow-hidden",
+  serviceImageContainer: "w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 rounded-full border-4 border-blue-300 mx-auto bg-blue-50 flex items-center justify-center overflow-hidden",
   
   // Images
   image: "w-full h-full object-cover",
   
   // Text styles
-  doctorName: "text-xl md:text-sm xl:text-md whitespace-nowrap lg:text-lg font-semibold mt-4 text-center",
-  serviceName: "text-xl md:text-sm lg:text-md xl:text-lg font-semibold text-center mt-4",
-  specialization: "text-sm text-emerald-700 mt-1",
-  price: "text-center text-green-700 font-semibold text-lg mt-2",
+  doctorName: "text-xs sm:text-sm font-semibold mt-2 text-center truncate w-full",
+  serviceName: "text-xs sm:text-sm font-semibold text-center mt-2 truncate w-full",
+  specialization: "text-xs sm:text-sm text-emerald-700 mt-1",
+  price: "text-center text-green-700 font-semibold text-sm sm:text-base lg:text-lg mt-2",
   
   // Date and time containers
   dateContainer: "mt-4 rounded-full border bg-emerald-50 border-emerald-200 py-1 px-3 w-full flex justify-center gap-2",
@@ -78,7 +78,7 @@ export const iconSize = {
 
 export const bannerStyles = {
   // Banner container styles
-  bannerContainer: "relative w-full max-w-7xl mx-auto my-12 px-4",
+  bannerContainer: "relative w-full max-w-7xl mx-auto my-6 sm:my-10 px-3 sm:px-4",
   
   // Main container with animated border
   mainContainer: "relative rounded-3xl shadow-2xl overflow-hidden group",
@@ -89,12 +89,12 @@ export const bannerStyles = {
   innerWhiteBorder: "absolute inset-0.5 rounded-3xl bg-white",
   
   // Content container
-  contentContainer: "relative z-20 p-6 sm:p-8 md:p-10 lg:p-12",
+  contentContainer: "relative z-20 p-4 sm:p-6 md:p-8 lg:p-10 xl:p-12",
   
   // Layout styles
-  flexContainer: "flex flex-col lg:flex-row items-center justify-between gap-8",
-  leftContent: "flex-1 text-center lg:text-left",
-  rightImageSection: "flex-1 relative w-full",
+  flexContainer: "flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8",
+  leftContent: "flex-1 text-center lg:text-left w-full",
+  rightImageSection: "flex-1 relative w-full max-w-sm sm:max-w-md lg:max-w-none mx-auto",
   
   // Header with badge
   headerBadgeContainer: "flex flex-col lg:flex-row items-center justify-center lg:justify-start mb-4 lg:mb-6 gap-4",
@@ -104,7 +104,7 @@ export const bannerStyles = {
   
   // Title styles
   titleContainer: "font-[pacifico]",
-  title: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-800 mb-1",
+  title: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-800 mb-1",
   titleGradient: "text-transparent bg-linear-to-r from-green-600 to-emerald-600 bg-clip-text",
   
   // Stars
@@ -113,11 +113,11 @@ export const bannerStyles = {
   starIcon: "w-4 h-4 fill-yellow-400 text-yellow-400",
   
   // Tagline
-  tagline: "text-lg sm:text-xl md:text-2xl lg:text-3xl font-light text-gray-700 mb-5 leading-tight",
+  tagline: "text-base sm:text-lg md:text-xl lg:text-2xl font-light text-gray-700 mb-4 leading-tight",
   taglineHighlight: "text-green-600 font-semibold",
   
   // Features grid
-  featuresGrid: "grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6 text-sm sm:text-base",
+  featuresGrid: "grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3 mb-5 text-sm",
   featureItem: "flex items-center justify-center lg:justify-start bg-linear-to-br from-green-500 to-green-200 backdrop-blur-sm p-3 rounded-full shadow-sm border",
   featureIcon: "w-5 h-5 text-white mr-3",
   featureText: "text-gray-700 font-medium",
@@ -129,23 +129,23 @@ export const bannerStyles = {
   featureBorderPurple: "border-purple-100",
   
   // CTA Buttons container
-  ctaButtonsContainer: "flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center lg:justify-start",
+  ctaButtonsContainer: "flex flex-col xs:flex-row sm:flex-row gap-3 justify-center lg:justify-start w-full",
   
   // Book appointment button
-  bookButton: "group relative lg:whitespace-nowrap bg-linear-to-r from-green-500 to-emerald-300 text-white px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold transform transition-all duration-300 shadow-2xl hover:shadow-3xl overflow-hidden text-sm sm:text-base",
+  bookButton: "w-full sm:w-auto group relative bg-gradient-to-r from-green-500 to-emerald-300 text-white px-5 py-3 sm:px-8 sm:py-4 rounded-full font-semibold transition-all duration-300 shadow-xl text-sm sm:text-base",
   bookButtonOverlay: "absolute inset-0 bg-white/20 transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000",
   bookButtonContent: "relative flex items-center justify-center gap-2",
   bookButtonIcon: "w-4 h-4 sm:w-5 sm:h-5",
   
   // Emergency call button
-  emergencyButton: "group border-2 lg:whitespace-nowrap border-red-400 text-red-600 bg-red-300 px-6 py-3 sm:px-8 sm:py-4 rounded-full font-semibold transform transition-all duration-300 backdrop-blur-sm hover:shadow-lg hover:bg-red-400/80 text-sm sm:text-base",
+  emergencyButton: "w-full sm:w-auto group border-2 border-red-400 text-red-600 bg-red-300 px-5 py-3 sm:px-8 sm:py-4 rounded-full font-semibold transition-all duration-300 text-sm sm:text-base",
   emergencyButtonContent: "flex items-center justify-center gap-2",
   emergencyButtonIcon: "w-4 h-4 sm:w-5 sm:h-5",
   
   // Image section
   imageContainer: "relative w-full max-w-md mx-auto",
   imageFrame: "relative transform transition-transform duration-500 overflow-hidden rounded-xl",
-  image: "w-full object-cover h-56 sm:h-72 md:h-96 lg:h-[360px] xl:h-[420px] transition-transform duration-700"
+  image: "w-full object-cover h-48 sm:h-64 md:h-80 lg:h-[360px] xl:h-[420px] transition-transform duration-700 rounded-xl"
 };
 
 export const commonStyles = {
@@ -184,9 +184,9 @@ export const certificationStyles = {
   headingInner: "relative inline-block",
   leftLine: "absolute -left-20 top-1/2 w-16 h-0.5 bg-linear-to-br from-transparent to-green-400",
   rightLine: "absolute -right-20 top-1/2 w-16 h-0.5 bg-linear-to-br from-transparent to-teal-400",
-  title: "text-3xl lg:text-6xl font-serif text-gray-900 mb-4 tracking-tight",
+  title: "text-2xl sm:text-3xl lg:text-5xl font-serif text-gray-900 mb-4 tracking-tight",
   titleText: "bg-linear-to-br from-green-600 via-teal-600 to-emerald-600 bg-clip-text text-transparent",
-  subtitle: "text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed font-light tracking-wide",
+  subtitle: "text-sm sm:text-base text-gray-600 max-w-2xl mx-auto leading-relaxed",
   badgeContainer: "inline-flex items-center px-5 py-2.5 bg-green-500/10 border border-green-400/30 rounded-full mt-6 backdrop-blur-sm",
   badgeDot: "w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse mr-3",
   badgeText: "text-green-700 font-semibold tracking-wide text-sm",
@@ -298,7 +298,7 @@ export const doctorsPageStyles = {
   
   // Header
   headerContainer: "text-center mb-8 sm:mb-10 animate-fade-in",
-  headerTitle: "text-3xl sm:text-4xl md:text-4xl lg:text-5xl font-bold bg-linear-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent mb-3 tracking-tight",
+  headerTitle: "text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold bg-linear-to-r from-emerald-700 to-teal-600 bg-clip-text text-transparent mb-3 tracking-tight",
   headerSubtitle: "text-sm sm:text-base text-emerald-700 font-light",
   
   // Search bar
@@ -314,7 +314,7 @@ export const doctorsPageStyles = {
   retryButton: "px-4 py-2 rounded-full bg-emerald-600 text-white",
   
   // Loading skeleton
-  skeletonGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8",
+  skeletonGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8",
   skeletonCard: "animate-pulse bg-white/80 backdrop-blur-md rounded-3xl p-4 sm:p-5 md:p-6 text-center transition-all duration-300",
   skeletonImage: "relative mx-auto mb-4 w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-36 lg:h-36 bg-emerald-100 rounded-full",
   skeletonName: "h-5 bg-emerald-100 rounded w-3/4 mx-auto mb-2",
@@ -322,28 +322,28 @@ export const doctorsPageStyles = {
   skeletonButton: "h-8 bg-emerald-100 rounded w-full mx-auto mt-4",
   
   // Doctors grid
-  doctorsGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-6 sm:gap-8 transition-all duration-300",
+  doctorsGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8 transition-all duration-300",
   
   // Doctor card
-  doctorCard: "bg-white/80 backdrop-blur-md rounded-3xl p-4 sm:p-5 md:p-6 text-center transition-all duration-300 hover:shadow-xl animate-fade-in-up",
+  doctorCard: "bg-white/80 backdrop-blur-md rounded-2xl p-3 sm:p-4 md:p-5 text-center transition-all duration-300 hover:shadow-xl animate-fade-in-up",
   doctorCardUnavailable: "opacity-80",
   
   // Doctor image container
-  imageContainer: "relative mx-auto mb-4 w-28 h-28 sm:w-32 sm:h-32 md:w-36 md:h-36 lg:w-36 lg:h-36",
+  imageContainer: "relative mx-auto mb-3 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 lg:w-32 lg:h-32",
   imageContainerUnavailable: "opacity-70 cursor-not-allowed",
   doctorImage: "w-full h-full rounded-full object-cover border-4 border-emerald-200 shadow-lg transform transition-transform duration-300 group-hover:scale-105",
   doctorImageUnavailable: "border-4 border-gray-300 shadow-md",
   
   // Doctor info
-  doctorName: "text-base sm:text-lg md:text-md whitespace-nowrap lg:text-lg font-bold text-emerald-900 mb-1",
-  doctorSpecialization: "text-sm sm:text-sm md:text-sm text-emerald-600 font-medium mb-3",
+  doctorName: "text-xs sm:text-sm md:text-base font-bold text-emerald-900 mb-1 truncate",
+  doctorSpecialization: "text-xs text-emerald-600 font-medium mb-2",
   
   // Experience badge
   experienceBadge: "inline-flex items-center gap-2 px-3 py-1 rounded-full text-sm font-medium mb-4 bg-emerald-50 border border-emerald-300 shadow-sm",
   experienceIcon: "w-4 h-4",
   
   // Book button (available)
-  bookButton: "w-full inline-flex items-center justify-center gap-2 py-2 rounded-full font-medium transition-all duration-300 text-sm bg-linear-to-r from-emerald-300 to-teal-500 text-white hover:shadow-lg",
+  bookButton: "w-full inline-flex items-center justify-center gap-1 py-1.5 sm:py-2 rounded-full font-medium transition-all duration-300 text-xs sm:text-sm bg-gradient-to-r from-emerald-300 to-teal-500 text-white hover:shadow-lg",
   bookButtonIcon: "w-5 h-5",
   
   // Not available button
@@ -381,11 +381,11 @@ export const footerStyles = {
   activityIcon: "w-5 h-5 text-green-500",
   
   // Main content
-  mainContent: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16 relative z-10",
-  gridContainer: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 lg:gap-12 mb-10 text-center lg:text-left",
+  mainContent: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16 relative z-10",
+  gridContainer: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-10 mb-10 text-center lg:text-left",
   
   // Company info
-  companySection: "lg:col-span-1 flex flex-col items-center lg:items-start",
+  companySection: "col-span-1 sm:col-span-2 lg:col-span-1 flex flex-col items-center lg:items-start",
   logoContainer: "flex items-center space-x-5 mb-6 transform transition-transform duration-500",
   logoWrapper: "relative",
   logoImageContainer: "relative w-16 h-16 md:w-18 md:h-18 lg:w-20 lg:h-20 p-1 transform transition-transform duration-500",
@@ -475,14 +475,14 @@ export const footerStyles = {
 
 export const homeDoctorsStyles = {
   // Section container
-  section: "py-10 bg-linear-to-br from-green-50 to-blue-50",
-  container: "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8",
+  section: "py-8 sm:py-14 bg-linear-to-br from-green-50 to-blue-50",
+  container: "max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8",
   
   // Header
-  header: "text-center mb-10",
-  title: "text-4xl md:text-5xl font-serif italic text-gray-900",
+  header: "text-center mb-6 sm:mb-10",
+  title: "text-2xl sm:text-3xl md:text-4xl font-bold text-center font-serif italic text-gray-900",
   titleSpan: "text-emerald-600 font-semibold",
-  subtitle: "mt-2 text-gray-600 max-w-2xl mx-auto",
+  subtitle: "mt-2 text-sm sm:text-base text-gray-600 text-center max-w-2xl mx-auto",
   
   // Error/Retry
   errorContainer: "text-center mb-6",
@@ -490,29 +490,29 @@ export const homeDoctorsStyles = {
   retryButton: "px-4 py-2 rounded-full bg-emerald-600 text-white",
   
   // Loading skeleton
-  skeletonGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8",
-  skeletonCard: "animate-pulse bg-white rounded-3xl shadow-md p-4 h-72",
+  skeletonGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8",
+  skeletonCard: "animate-pulse bg-white rounded-3xl shadow-md p-3 sm:p-4 h-72",
   skeletonImage: "bg-emerald-100 rounded-lg h-40 mb-4",
   skeletonText1: "h-5 bg-emerald-100 rounded w-3/4 mb-2",
   skeletonText2: "h-4 bg-emerald-100 rounded w-1/2 mb-3",
   skeletonButton: "h-8 w-full bg-emerald-100 rounded",
   
   // Doctors grid
-  doctorsGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 sm:gap-8",
+  doctorsGrid: "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-8",
   
   // Doctor card
   article: "group relative bg-white rounded-3xl shadow-md hover:shadow-2xl transition transform duration-300 overflow-hidden",
   
   // Image containers
-  imageContainerAvailable: "relative h-60 sm:h-44 md:h-48 lg:h-52 overflow-hidden rounded-t-3xl",
-  imageContainerUnavailable: "relative h-60 sm:h-44 md:h-48 lg:h-52 overflow-hidden rounded-t-3xl opacity-80 cursor-not-allowed",
+  imageContainerAvailable: "relative h-44 sm:h-44 md:h-48 lg:h-52 overflow-hidden rounded-t-3xl",
+  imageContainerUnavailable: "relative h-44 sm:h-44 md:h-48 lg:h-52 overflow-hidden rounded-t-3xl opacity-80 cursor-not-allowed",
   image: "w-full h-full object-cover object-center transform transition-transform duration-500",
   unavailableBadge: "absolute top-3 left-3 bg-rose-50 text-rose-700 text-xs px-2 py-1 rounded-full shadow",
   
   // Card body
   cardBody: "p-3 sm:p-4 md:p-5 font-serif",
-  doctorName: "text-base sm:text-lg md:text-sm lg:text-md xl:text-xl font-semibold text-black",
-  specialization: "text-sm sm:text-sm md:text-sm text-emerald-600 font-medium mt-1",
+  doctorName: "text-xs sm:text-sm font-bold text-emerald-900 truncate",
+  specialization: "text-xs sm:text-sm text-emerald-600 font-medium mt-1 truncate",
   
   // Experience badge
   experienceContainer: "mt-3 flex items-center justify-between text-sm text-gray-600",
@@ -606,17 +606,17 @@ export const navbarStyles = {
   navbarBorder: "navbar-border",
   
   // Content wrapper
-  contentWrapper: "max-w-7xl font-[pacifico] md:px-2 mx-auto px-4 sm:px-6 lg:px-8",
-  flexContainer: "flex items-center justify-between h-20",
+  contentWrapper: "max-w-7xl font-[pacifico] md:px-2 mx-auto px-3 sm:px-4 lg:px-8",
+  flexContainer: "flex items-center justify-between h-16 sm:h-20",
   
   // Logo section
-  logoLink: "flex items-center gap-3 -ml-3 sm:-ml-4",
-  logoContainer: "relative group w-20 h-20 sm:w-24 sm:h-24 lg:w-15 lg:h-15 xl:w-32 xl:h-32",
+  logoLink: "flex items-center gap-2 sm:gap-3 -ml-2 sm:-ml-4",
+  logoContainer: "relative group w-16 h-16 sm:w-20 sm:h-20 lg:w-15 lg:h-15 xl:w-28 xl:h-28",
   logoImageWrapper: "relative flex items-center justify-center overflow-hidden p-2 mx-1 h-full w-full",
-  logoImage: "w-14 h-14 sm:w-18 sm:h-18 lg:w-15 lg:h-15 xl:w-24 xl:h-24 md:w-20 md:h-20 object-contain",
-  logoTextContainer: "block sm:block",
-  logoTitle: "text-2xl md:text-2xl lg:text-2xl xl:text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-emerald-600 to-green-600 tracking-tight",
-  logoSubtitle: "text-xs lg:text-xs text-gray-500",
+  logoImage: "w-12 h-12 sm:w-14 sm:h-14 lg:w-15 lg:h-15 xl:w-20 xl:h-20 md:w-16 md:h-16 object-contain",
+  logoTextContainer: "block",
+  logoTitle: "text-xl sm:text-2xl font-bold bg-clip-text text-transparent bg-linear-to-r from-emerald-600 to-green-600 tracking-tight",
+  logoSubtitle: "text-xs text-gray-500 hidden sm:block",
   
   // Desktop navigation
   desktopNav: "hidden lg:-mx-5 lg:flex items-center gap-2",
@@ -626,29 +626,29 @@ export const navbarStyles = {
   navItemInactive: "text-gray-700 hover:text-emerald-600",
   
   // Right side
-  rightContainer: "flex items-center gap-3",
+  rightContainer: "flex items-center gap-1 sm:gap-2",
   
   // Signed out buttons
   doctorAdminButton: "btn-add hidden lg:inline-flex items-center gap-2 px-3 py-2 rounded-full text-sm font-semibold transition-transform duration-200",
   doctorAdminIcon: "w-4 h-4",
   doctorAdminText: "hidden lg:text-xs lg:whitespace-nowrap sm:inline-block",
-  loginButton: "btn-login hidden lg:flex lg:text-sm items-center gap-2 bg-linear-to-r from-emerald-400 to-green-600 text-white px-6 py-2.5 rounded-full font-semibold hover:shadow-xl transition-all duration-300 cursor-default",
+  loginButton: "btn-login flex lg:text-sm items-center gap-1 sm:gap-2 bg-linear-to-r from-emerald-400 to-green-600 text-white px-3 sm:px-5 py-2 sm:py-2.5 rounded-full font-semibold hover:shadow-xl transition-all duration-300 cursor-default",
   loginIcon: "w-4 h-4",
   
   // Mobile toggle
-  mobileToggle: "lg:hidden p-2.5 rounded-lg hover:bg-emerald-50 transition-colors",
-  toggleIcon: "w-6 h-6 text-gray-900",
+  mobileToggle: "lg:hidden p-2 sm:p-2.5 rounded-lg hover:bg-emerald-50 transition-colors",
+  toggleIcon: "w-5 h-5 sm:w-6 sm:h-6 text-gray-900",
   
   // Mobile menu
-  mobileMenu: "mobile-menu lg:hidden pb-4 space-y-2 border-t border-emerald-100 pt-4",
-  mobileMenuItem: "block px-4 py-2.5 rounded-lg text-sm font-semibold transition-all duration-300",
+  mobileMenu: "mobile-menu lg:hidden pb-4 space-y-1 border-t border-emerald-100 pt-3",
+  mobileMenuItem: "block py-3 px-4 text-base rounded-lg font-semibold transition-all duration-300",
   mobileMenuItemActive: "bg-emerald-500 text-white",
   mobileMenuItemInactive: "text-gray-700 hover:bg-emerald-50 hover:text-emerald-600",
   
   // Mobile signed out buttons
-  mobileDoctorAdminButton: "w-full flex items-center justify-center gap-2 py-2.5 rounded-full border border-emerald-200 bg-white text-sm font-semibold hover:bg-emerald-50 transition-all",
+  mobileDoctorAdminButton: "w-full flex items-center justify-center gap-2 py-3 rounded-full border border-emerald-200 bg-white text-sm font-semibold hover:bg-emerald-50 transition-all",
   mobileLoginContainer: "w-full mt-3",
-  mobileLoginButton: "w-full cursor-default md:rounded-full flex items-center justify-center gap-2 bg-linear-to-r from-emerald-500 to-green-600 text-white py-2.5 rounded-lg font-semibold hover:shadow-lg transition-all",
+  mobileLoginButton: "w-full cursor-default md:rounded-full flex items-center justify-center gap-2 bg-linear-to-r from-emerald-500 to-green-600 text-white py-3 rounded-lg font-semibold hover:shadow-lg transition-all",
   
   // Animation styles (to be added via style tag)
   animationStyles: `
@@ -782,7 +782,7 @@ export const servicePageStyles = {
   skeletonButton: "h-10 bg-emerald-100 rounded w-full",
   
   // Services grid
-  servicesGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-4 gap-8",
+  servicesGrid: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6",
   
   // Empty state
   emptyState: "col-span-full text-center py-10 text-emerald-800 font-medium text-base",
@@ -801,8 +801,8 @@ export const serviceCardStyles = {
   fallbackImage: "w-full h-60 sm:h-48 md:h-56 lg:h-60 object-cover object-center transform transition-transform duration-500",
   
   // Content
-  content: "p-5 text-center",
-  serviceName: "text-lg md:text-sm whitespace-nowrap font-semibold font-serif text-emerald-900",
+  content: "p-3 sm:p-4 md:p-5 text-center",
+  serviceName: "text-sm sm:text-base font-semibold font-serif text-emerald-900",
   
   // Buttons
   buttonContainer: "mt-4",
@@ -815,15 +815,15 @@ export const serviceCardStyles = {
 // Testimonial styles
 export const testimonialStyles = {
   // Main container
-  container: "min-h-[70vh] bg-linear-to-br from-slate-50 to-blue-50 py-10 px-4 relative overflow-hidden",
+  container: "min-h-[70vh] bg-linear-to-br from-slate-50 to-blue-50 py-8 sm:py-14 px-3 sm:px-6 relative overflow-hidden",
   
   // Header
-  headerContainer: "max-w-6xl font-serif mx-auto text-center mb-8 sm:mb-12",
-  title: "text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-transparent bg-clip-text bg-linear-to-br from-blue-600 to-green-600 mb-3",
+  headerContainer: "max-w-6xl font-serif mx-auto text-center mb-6 sm:mb-10",
+  title: "text-2xl sm:text-3xl md:text-4xl font-bold text-center text-transparent bg-clip-text bg-linear-to-br from-blue-600 to-green-600 mb-3",
   subtitle: "text-sm sm:text-base text-gray-600 max-w-3xl mx-auto",
   
   // Testimonial grid
-  grid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-5xl mx-auto items-stretch",
+  grid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-3 sm:gap-6 max-w-5xl mx-auto items-stretch",
   
   // Column container
   columnContainer: "relative font-serif border-2 rounded-2xl overflow-hidden bg-white/60 backdrop-blur-sm",
@@ -839,20 +839,20 @@ export const testimonialStyles = {
   scrollContainer: "h-56 sm:h-72 md:h-[360px] lg:h-[400px] overflow-y-hidden no-scrollbar p-3 sm:p-4",
   
   // Testimonial card
-  testimonialCard: "bg-white font-[pacifico] rounded-xl shadow-lg p-4 sm:p-5 mb-4 transition-transform duration-300 border-l-4 w-full max-w-xl mx-auto",
+  testimonialCard: "bg-white font-[pacifico] rounded-xl shadow-lg p-4 sm:p-6 mb-4 transition-transform duration-300 border-l-4 w-full max-w-xl mx-auto",
   leftCardBorder: "border-blue-400 hover:shadow-blue-100",
   rightCardBorder: "border-green-400 hover:shadow-green-100",
   
   // Card content
   cardContent: "flex items-start space-x-3 sm:space-x-4",
-  avatar: "w-12 h-12 sm:w-14 sm:h-14 object-cover rounded-full border border-gray-200 shadow-sm",
-  textContainer: "flex-1",
+  avatar: "w-10 h-10 sm:w-12 sm:h-12 object-cover rounded-full border border-gray-200 shadow-sm flex-shrink-0",
+  textContainer: "flex-1 min-w-0",
   nameRoleContainer: "flex items-center justify-between gap-3",
   name: "font-semibold text-sm sm:text-base",
   leftName: "text-blue-800",
   rightName: "text-green-800",
   role: "text-xs sm:text-sm text-gray-600",
-  quote: "text-gray-700 italic text-sm sm:text-base mt-2 leading-tight",
+  quote: "text-gray-700 italic text-sm sm:text-base mt-2 leading-relaxed",
   
   // Stars
   starsContainer: "hidden sm:flex items-center gap-1",
@@ -883,66 +883,66 @@ export const testimonialStyles = {
 
 export const serviceDetailStyles = {
   // Page container
-  pageContainer: "min-h-screen font-serif bg-linear-to-br from-emerald-50 via-white to-green-50 px-4 lg:px-12 pt-20 sm:pt-12 md:pt-8 lg:pt-0",
+  pageContainer: "min-h-screen font-serif bg-linear-to-br from-emerald-50 via-white to-green-50 px-3 sm:px-4 md:px-6 lg:px-12 py-6 sm:py-10 pt-20 sm:pt-12 md:pt-8 lg:pt-6",
   
   // Navigation bar
   navBar: "backdrop-blur-lg top-0 z-20",
-  navContainer: "max-w-6xl mx-auto h-16 flex items-center justify-between px-4",
-  backButton: "inline-flex items-center gap-2 px-4 py-2 bg-white text-emerald-600 border border-emerald-200 rounded-full hover:bg-emerald-50",
+  navContainer: "max-w-6xl mx-auto h-14 sm:h-16 flex items-center justify-between px-3 sm:px-4",
+  backButton: "inline-flex items-center gap-2 px-3 sm:px-4 py-2 bg-white text-emerald-600 border border-emerald-200 rounded-full hover:bg-emerald-50 text-sm sm:text-base",
   
   // Main grid layout
-  mainGrid: "max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-10 mt-6",
+  mainGrid: "max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6 sm:gap-10 mt-4 sm:mt-6",
   
   // Left column
-  leftColumn: "space-y-8",
+  leftColumn: "space-y-5 sm:space-y-8",
   
   // Image
-  imageContainer: "w-full h-56 sm:h-72 md:h-96 lg:h-[65vh] xl:h-[70vh] rounded-3xl overflow-hidden shadow-2xl border border-white/50",
+  imageContainer: "w-full h-48 sm:h-64 md:h-80 lg:h-[65vh] xl:h-[70vh] rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-white/50",
   image: "w-full h-full object-cover object-center transition-transform duration-500",
   
   // Details form
-  detailsContainer: "bg-white p-6 rounded-2xl shadow-xl border border-emerald-100",
-  detailsTitle: "text-lg font-semibold text-emerald-700 flex items-center gap-2 mb-4",
-  detailsGrid: "grid grid-cols-1 sm:grid-cols-2 gap-4",
+  detailsContainer: "bg-white p-4 sm:p-6 rounded-2xl shadow-xl border border-emerald-100",
+  detailsTitle: "text-base sm:text-lg font-semibold text-emerald-700 flex items-center gap-2 mb-3 sm:mb-4",
+  detailsGrid: "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4",
   
   // Input fields
-  input: "px-4 py-3 rounded-full border border-emerald-200 focus:ring-2 focus:ring-emerald-300 w-full",
-  invalidInput: "px-4 py-3 rounded-full border border-rose-500 focus:ring-2 focus:ring-emerald-300 w-full",
-  emailInput: "px-4 py-3 rounded-full border border-emerald-200 focus:ring-2 focus:ring-emerald-300 w-full sm:col-span-2",
+  input: "w-full text-sm sm:text-base py-2 sm:py-3 px-3 sm:px-4 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-300",
+  invalidInput: "w-full text-sm sm:text-base py-2 sm:py-3 px-3 sm:px-4 rounded-xl border border-rose-500 focus:ring-2 focus:ring-emerald-300",
+  emailInput: "w-full text-sm sm:text-base py-2 sm:py-3 px-3 sm:px-4 rounded-xl border border-emerald-200 focus:ring-2 focus:ring-emerald-300 sm:col-span-2",
   
   // Payment method
   paymentLabel: "font-semibold text-emerald-800 block mb-2",
-  paymentOptions: "inline-flex gap-2",
+  paymentOptions: "inline-flex gap-2 flex-wrap",
   paymentOption: (isSelected) => 
-    `px-3 py-1 rounded-full cursor-pointer border ${isSelected ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-emerald-700 border-emerald-100"}`,
+    `px-3 py-1 rounded-full cursor-pointer border text-sm ${isSelected ? "bg-emerald-600 text-white border-emerald-600" : "bg-white text-emerald-700 border-emerald-100"}`,
   paymentInput: "hidden",
   
   // Date selection
-  dateSection: "mt-4",
-  dateTitle: "text-xl font-semibold text-emerald-900 mb-2",
-  dateScrollContainer: "overflow-x-auto -mx-2 px-2",
-  dateButtonsContainer: "inline-flex gap-3 sm:flex sm:flex-wrap",
+  dateSection: "mt-3 sm:mt-4",
+  dateTitle: "text-base sm:text-xl font-semibold text-emerald-900 mb-2",
+  dateScrollContainer: "flex gap-1.5 sm:gap-2 overflow-x-auto pb-2 -mx-1 px-1",
+  dateButtonsContainer: "flex gap-1.5 sm:gap-2",
   dateButton: (isSelected) => 
-    `px-5 py-2 rounded-full cursor-pointer border transition whitespace-nowrap min-w-[140px] sm:min-w-0 ${isSelected ? "bg-emerald-600 border-emerald-600 text-white" : "bg-white border-emerald-300 text-emerald-700 hover:bg-emerald-100"}`,
+    `flex-shrink-0 px-3 sm:px-5 py-1.5 sm:py-2 rounded-full cursor-pointer border transition whitespace-nowrap text-xs sm:text-sm ${isSelected ? "bg-emerald-600 border-emerald-600 text-white" : "bg-white border-emerald-300 text-emerald-700 hover:bg-emerald-100"}`,
   
   // Time selection
-  timeSection: "mt-4",
-  timeTitle: "text-xl font-semibold text-emerald-900 mb-2",
-  timeScrollContainer: "overflow-x-auto -mx-2 px-2",
-  timeButtonsContainer: "inline-flex gap-3 sm:flex sm:flex-wrap",
+  timeSection: "mt-3 sm:mt-4",
+  timeTitle: "text-base sm:text-xl font-semibold text-emerald-900 mb-2",
+  timeScrollContainer: "overflow-x-auto -mx-1 px-1",
+  timeButtonsContainer: "grid grid-cols-2 sm:grid-cols-3 gap-2",
   timeButton: (isSelected) => 
-    `px-5 py-2 rounded-full cursor-pointer border transition whitespace-nowrap min-w-[140px] sm:min-w-0 flex items-center gap-2 ${isSelected ? "bg-emerald-600 border-emerald-600 text-white" : "bg-white border-emerald-300 text-emerald-700 hover:bg-emerald-100"}`,
-  noSlotsMessage: "text-emerald-600/80 p-2",
+    `px-2 sm:px-4 py-1.5 sm:py-2 rounded-full cursor-pointer border transition text-xs sm:text-sm flex items-center gap-1 sm:gap-2 justify-center ${isSelected ? "bg-emerald-600 border-emerald-600 text-white" : "bg-white border-emerald-300 text-emerald-700 hover:bg-emerald-100"}`,
+  noSlotsMessage: "text-emerald-600/80 p-2 text-sm",
   
   // Submit button
-  errorMessage: "text-rose-600 mb-2",
-  successMessage: "text-emerald-700 mb-2",
+  errorMessage: "text-rose-600 mb-2 text-sm",
+  successMessage: "text-emerald-700 mb-2 text-sm",
   submitButton: (isValid, isSubmitting) => 
-    `w-full py-4 md:mb-8 rounded-full cursor-pointer text-lg font-semibold flex items-center justify-center gap-3 transition ${isValid && !isSubmitting ? "bg-linear-to-br from-emerald-500 to-green-500 text-white shadow-lg hover:opacity-90" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`,
+    `w-full sm:w-auto px-6 py-3 md:mb-8 rounded-full cursor-pointer text-base sm:text-lg font-semibold flex items-center justify-center gap-3 transition ${isValid && !isSubmitting ? "bg-linear-to-br from-emerald-500 to-green-500 text-white shadow-lg hover:opacity-90" : "bg-gray-300 text-gray-500 cursor-not-allowed"}`,
   
   // Right column
-  rightColumn: "bg-white/80 rounded-3xl shadow-xl p-6 sm:p-8 border border-white/50 h-fit",
-  serviceName: "text-2xl lg:text-3xl xl:text-3xl md:text-2xl sm:text-4xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent",
+  rightColumn: "bg-white/80 rounded-3xl shadow-xl p-4 sm:p-6 md:p-8 border border-white/50 h-fit",
+  serviceName: "text-2xl sm:text-3xl md:text-4xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent",
   
   // About section
   aboutContainer: "mt-6 bg-emerald-50 p-5 rounded-xl border border-emerald-100",
@@ -1007,19 +1007,19 @@ export const doctorDetailStyles = {
   headerRatingText: "font-semibold text-amber-600",
   
   // Main content wrapper
-  mainContent: "relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 pt-20 sm:pt-8 transition-all duration-700",
+  mainContent: "relative z-10 max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-8 pt-20 sm:pt-8 transition-all duration-700",
   visibleState: "opacity-100 translate-y-0",
   hiddenState: "opacity-0 translate-y-8",
   
   // Profile card
   profileCard: "bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl border border-white/50 overflow-hidden mb-8",
-  profileGrid: "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-6 sm:p-8",
+  profileGrid: "flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6 p-4 sm:p-6 md:p-8",
   
   // Left column (avatar)
   leftColumn: "lg:col-span-1 flex flex-col items-center space-y-6",
   avatarContainer: "relative",
   avatarGlow: "absolute -inset-2 sm:-inset-3 md:-inset-6 bg-linear-to-br from-emerald-400 to-green-400 rounded-full blur-lg opacity-50 animate-pulse",
-  avatarImage: "relative w-32 h-32 sm:w-40 sm:h-40 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full object-cover border-4 sm:border-6 md:border-8 border-white shadow-2xl z-10 transition-transform duration-300",
+  avatarImage: "relative w-24 h-24 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full object-cover border-4 border-white shadow-2xl z-10 transition-transform duration-300",
   statsGrid: "grid grid-cols-2 md:grid-cols-2 xl:grid-cols-3 lg:grid-cols-2 gap-4 w-full max-w-lg px-2",
   statBox: "text-center p-3 sm:p-4 bg-white rounded-2xl shadow-lg border border-emerald-50 hover:shadow-xl transition-all duration-300 hover:-translate-y-1",
   statIcon: "w-5 h-5 mx-auto mb-2",
@@ -1030,9 +1030,9 @@ export const doctorDetailStyles = {
   statLabel: "text-xs text-gray-500",
   
   // Right column (doctor info)
-  rightColumn: "lg:col-span-2 space-y-6",
-  doctorName: "text-2xl md:text-2xl lg:text-3xl xl:text-3xl sm:text-4xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent",
-  specializationBadge: "inline-flex items-center gap-2 px-4 py-2 bg-linear-to-r from-emerald-400 to-green-500 text-white rounded-full text-sm font-semibold shadow-lg",
+  rightColumn: "flex-1 space-y-4 sm:space-y-6 w-full",
+  doctorName: "text-xl sm:text-2xl md:text-3xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent",
+  specializationBadge: "inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 sm:py-2 bg-linear-to-r from-emerald-400 to-green-500 text-white rounded-full text-sm sm:text-base font-semibold shadow-lg",
   badgeIcon: "w-4 h-4",
   
   // Info grid
@@ -1055,40 +1055,40 @@ export const doctorDetailStyles = {
   appointmentContent: "p-6 sm:p-8",
   appointmentHeader: "flex items-center gap-3 mb-6",
   appointmentIcon: "w-6 h-6 text-emerald-500",
-  appointmentTitle: "text-md md:text-2xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent",
+  appointmentTitle: "text-base sm:text-xl md:text-2xl font-bold bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent",
   
   // Appointment grid
-  appointmentGrid: "grid grid-cols-1 lg:grid-cols-2 gap-6",
+  appointmentGrid: "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6",
   
   // Date selection
   dateSection: "space-y-6",
   dateTitle: "text-lg md:text-xl font-semibold text-emerald-700 flex items-center gap-2",
   dateTitleIcon: "w-5 h-5",
-  dateScrollContainer: "overflow-x-auto -mx-2 px-2",
-  dateButtonsContainer: "inline-grid grid-flow-col auto-cols-max gap-3 sm:grid sm:grid-flow-row sm:auto-cols-auto sm:grid-cols-3 md:grid-cols-7 lg:grid-cols-5 xl:grid-cols-6",
-  dateButton: "p-2 sm:p-3 rounded-full cursor-pointer border-2 transition-all whitespace-nowrap",
+  dateScrollContainer: "overflow-x-auto -mx-2 px-2 pb-2 scrollbar-none",
+  dateButtonsContainer: "flex gap-1.5 sm:gap-2",
+  dateButton: "flex-shrink-0 p-1.5 sm:p-2 rounded-xl cursor-pointer border-2 transition-all min-w-[48px] sm:min-w-[56px]",
   dateButtonSelected: "bg-linear-to-br from-emerald-500 to-green-500 text-white border-emerald-500 shadow-lg",
   dateButtonUnselected: "bg-white text-gray-700 border-emerald-100",
-  dateContent: "text-center",
-  dateWeekday: "text-xs sm:text-sm opacity-80",
-  dateDay: "text-xl sm:text-2xl font-bold",
+  dateContent: "flex flex-col items-center text-center",
+  dateWeekday: "text-xs opacity-80",
+  dateDay: "text-lg sm:text-xl font-bold",
   dateMonth: "text-xs opacity-80",
   
   // Patient form
   patientForm: "bg-white rounded-2xl p-6 border border-emerald-100 shadow-sm",
   patientFormTitle: "text-lg font-semibold text-emerald-700 mb-4",
-  patientFormGrid: "grid grid-cols-1 md:grid-cols-2 gap-4",
-  formInput: "p-3 rounded-full border border-emerald-200 w-full",
-  emailInput: "p-3 rounded-full border border-emerald-200 w-full md:col-span-2",
-  formSelect: "p-3 rounded-full border border-emerald-200 w-full",
+  patientFormGrid: "grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4",
+  formInput: "w-full text-sm sm:text-base py-2 sm:py-3 px-3 sm:px-4 rounded-xl border border-emerald-200",
+  emailInput: "w-full text-sm sm:text-base py-2 sm:py-3 px-3 sm:px-4 rounded-xl border border-emerald-200 sm:col-span-2",
+  formSelect: "w-full text-sm sm:text-base py-2 sm:py-3 px-3 sm:px-4 rounded-xl border border-emerald-200",
   
   // Time slots
   timeSlotsSection: "space-y-6",
   timeSlotsTitle: "text-lg font-semibold text-emerald-700 flex items-center gap-2",
   timeSlotsIcon: "w-5 h-5",
-  timeSlotsContainer: "flex gap-3 overflow-x-auto sm:grid sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-2 xl:grid-cols-3",
-  noSlotsMessage: "text-gray-500",
-  timeSlotButton: "min-w-[140px] p-2 rounded-full border-2",
+  timeSlotsContainer: "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2",
+  noSlotsMessage: "text-gray-500 text-sm",
+  timeSlotButton: "text-xs sm:text-sm py-1.5 sm:py-2 px-2 sm:px-3 rounded-lg border-2 cursor-pointer transition-all",
   timeSlotButtonSelected: "bg-linear-to-br from-emerald-500 to-green-500 text-white border-emerald-500",
   timeSlotButtonUnselected: "bg-white text-gray-700 border-emerald-100",
   timeSlotContent: "flex items-center justify-center gap-2",
@@ -1098,21 +1098,21 @@ export const doctorDetailStyles = {
   summaryContainer: "bg-linear-to-r from-emerald-50 to-green-50 p-4 sm:p-6 rounded-2xl border border-emerald-100",
   summaryItem: "space-y-3 mb-4 sm:mb-6",
   summaryRow: "flex justify-between",
-  summaryLabel: "text-md text-gray-600",
+  summaryLabel: "text-sm sm:text-base text-gray-600",
   summaryValue: "font-semibold text-emerald-700 text-sm sm:text-base",
-  feeDisplay: "font-bold text-rose-600",
+  feeDisplay: "font-bold text-base sm:text-lg text-rose-600",
   
   // Payment method
-  paymentContainer: "mb-3 flex items-center gap-3",
+  paymentContainer: "mb-3 flex flex-wrap items-center gap-2 sm:gap-3",
   paymentLabel: "text-sm font-medium text-emerald-700",
-  paymentOptions: "inline-flex gap-2",
-  paymentOption: "px-3 py-1 rounded-full cursor-pointer border",
+  paymentOptions: "flex flex-wrap gap-2 sm:gap-3",
+  paymentOption: "flex items-center gap-1.5 sm:gap-2 text-sm sm:text-base px-3 py-1 rounded-full cursor-pointer border",
   paymentOptionSelected: "bg-emerald-600 text-white border-emerald-600",
   paymentOptionUnselected: "bg-white text-emerald-700 border-emerald-100",
   paymentRadio: "hidden",
   
   // Booking button
-  bookingButton: "w-full py-3 sm:py-4 px-4 rounded-full font-semibold text-sm cursor-pointer transition-all",
+  bookingButton: "w-full sm:w-auto px-6 sm:px-8 py-3 text-sm sm:text-base rounded-full font-semibold cursor-pointer transition-all",
   bookingButtonEnabled: "bg-linear-to-r from-emerald-500 to-green-500 text-white",
   bookingButtonDisabled: "bg-gray-300 text-gray-500",
   bookingButtonContent: "flex items-center justify-center gap-3",

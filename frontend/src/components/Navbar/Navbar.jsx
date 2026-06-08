@@ -160,7 +160,7 @@ const Navbar = () => {
               ) : (
                 <button onClick={handleLoginClick} className={navbarStyles.loginButton}>
                   <LogIn className={navbarStyles.loginIcon} />
-                  <span>Login / Register</span>
+                  <span>Login</span><span className="hidden sm:inline"> / Register</span>
                 </button>
               )}
 
