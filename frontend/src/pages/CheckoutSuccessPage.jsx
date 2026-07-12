@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams, Link, useLocation } from 'react-router-dom';
 import { CheckCircle, AlertCircle, Calendar, ArrowRight, Loader2 } from 'lucide-react';
 
-const API_BASE = "http://localhost:4000";
+import API_BASE from "../api.js";
 
 const CheckoutSuccessPage = () => {
   const [searchParams] = useSearchParams();

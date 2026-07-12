@@ -3,7 +3,7 @@ import { useParams, useLocation, Link } from 'react-router-dom';
 import { Calendar, Clock, Phone, Search, X, User } from 'lucide-react';
 import { listPageStyles } from '../../assets/dummyStyles';
 
-const API_BASE = "http://localhost:4000";
+import API_BASE from "../../api.js";
 
 function parseDateTime(date, time) {
   return new Date(`${date}T${time}:00`);

@@ -1,6 +1,7 @@
 import ServiceAppointment from "../models/serviceAppointment.js";
 import Service from "../models/Service.js";
 import Stripe from "stripe";
+import jwt from "jsonwebtoken";
 import { createPayPalOrder, capturePayPalOrder } from "../config/paypal.js";
 
 const stripeKey = process.env.STRIPE_SECRET_KEY || "";
@@ -52,6 +53,10 @@ function resolveClerkUserId(req) {
     if (authHeader && authHeader.startsWith("Bearer ")) {
       const token = authHeader.split(" ")[1];
       if (token.startsWith("mock_user_")) return token;
+      
+      // Decode JWT payload without verification
+      const decoded = jwt.decode(token);
+      if (decoded && decoded.sub) return decoded.sub;
     }
     
     if (req.query.createdBy) return req.query.createdBy;

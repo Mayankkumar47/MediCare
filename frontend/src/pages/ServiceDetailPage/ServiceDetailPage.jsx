@@ -12,7 +12,7 @@ import { useAuth } from "@clerk/clerk-react";
 import toast, { Toaster } from "react-hot-toast";
 import { serviceDetailStyles, iconSize } from "../../assets/dummyStyles";
 
-const DEFAULT_HOST = "http://localhost:4000".replace(/\/$/, "");
+import API_BASE from "../../api.js";
 
 export default function ServiceDetail() {
   const { id } = useParams();
@@ -65,7 +65,7 @@ export default function ServiceDetail() {
     const controller = new AbortController();
 
     const endpoints = [
-      `${DEFAULT_HOST}/api/services/${encodeURIComponent(id)}`,
+      `${API_BASE}/api/services/${encodeURIComponent(id)}`,
     ];
 
     async function tryFetch() {
@@ -332,7 +332,7 @@ export default function ServiceDetail() {
         return;
       }
 
-      const res = await fetch(`${DEFAULT_HOST}/api/service-appointments`, {
+      const res = await fetch(`${API_BASE}/api/service-appointments`, {
         method: "POST",
         headers,
         body: JSON.stringify(payload),
