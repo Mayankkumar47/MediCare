@@ -38,6 +38,49 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Dynamic upload URLs response transformer middleware
+app.use((req, res, next) => {
+  const oldJson = res.json;
+  res.json = function (data) {
+    const protocol = req.secure || req.headers['x-forwarded-proto'] === 'https' ? 'https' : 'http';
+    const host = req.get('host');
+    const baseUrl = `${protocol}://${host}`;
+
+    const isPlainObject = (val) => val && (Object.getPrototypeOf(val) === null || Object.getPrototypeOf(val) === Object.prototype);
+
+    const replaceUrl = (obj) => {
+      if (!obj) return obj;
+      if (typeof obj === 'string') {
+        if (obj.includes('localhost:4000/uploads/')) {
+          return obj.replace(/http:\/\/localhost:4000/g, baseUrl);
+        }
+        if (obj.startsWith('/uploads/') || obj.startsWith('uploads/')) {
+          const clean = obj.startsWith('/') ? obj : `/${obj}`;
+          return `${baseUrl}${clean}`;
+        }
+        return obj;
+      }
+      if (Array.isArray(obj)) {
+        return obj.map(replaceUrl);
+      }
+      if (isPlainObject(obj)) {
+        const newObj = {};
+        for (const key in obj) {
+          if (Object.prototype.hasOwnProperty.call(obj, key)) {
+            newObj[key] = replaceUrl(obj[key]);
+          }
+        }
+        return newObj;
+      }
+      return obj;
+    };
+
+    const transformedData = replaceUrl(data);
+    return oldJson.call(this, transformedData);
+  };
+  next();
+});
+
 // Ensure public upload directories exist
 const uploadDir = "./public/uploads";
 if (!fs.existsSync(uploadDir)) {
