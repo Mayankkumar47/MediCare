@@ -46,7 +46,10 @@ export const uploadToCloudinary = async (filePath, folder = "general") => {
       fs.mkdirSync(destFolder, { recursive: true });
     }
     const destPath = path.join(destFolder, filename);
-    fs.renameSync(filePath, destPath);
+    fs.copyFileSync(filePath, destPath);
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
     
     // Return local server URL (assumed host domain will be prepend on request if needed, or relative)
     const localUrl = `http://localhost:4000/uploads/${folder}/${filename}`;
