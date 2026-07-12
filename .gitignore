@@ -28,8 +28,17 @@ Thumbs.db
 .idea/
 
 # Uploads (locally generated, not part of source)
-backend/public/uploads/
+backend/public/uploads/*
 backend/uploads/
+
+# Force inclusion of seeded assets in git
+!backend/public/uploads/meera.png
+!backend/public/uploads/cbc.png
+!backend/public/uploads/lipid.png
+!backend/public/uploads/kft.png
+!backend/public/uploads/lft.png
+!backend/public/uploads/cardiac.png
+!backend/public/uploads/covid.png
 
 # Lock files (keep package-lock for reproducible installs)
 # package-lock.json

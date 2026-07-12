@@ -98,7 +98,7 @@ const Footer = () => {
                 <div className={footerStyles.contactIconWrapper}>
                   <MapPin className={footerStyles.contactIcon} />
                 </div>
-                <span className={footerStyles.contactText}>Gomti Nagar, Lucknow, UP</span>
+                <span className={footerStyles.contactText}>VAIHSALI, SECTOR -4 GHAZIABAD, UP</span>
               </div>
               <div className={footerStyles.contactItem}>
                 <div className={footerStyles.contactIconWrapper}>
